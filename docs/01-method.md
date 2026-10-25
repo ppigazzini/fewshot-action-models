@@ -1,0 +1,82 @@
+# Method
+
+## Representation
+
+Lifted STRIPS with negative preconditions (`amlearn/strips.py`). A precondition is a set
+of atoms that must hold and a set that must not; an effect is a set of added and a set of
+deleted atoms, applied delete first. Action schemas take no constants, so every argument
+of a schema atom is a parameter.
+
+Grounding is injective: distinct parameters take distinct objects. The planners, the
+validator and the learner share that semantics, so a learned model is never run where its
+guarantee does not reach.
+
+## The learner
+
+Safe action-model learning (SAM; Stern and Juba 2017, lifted by Juba, Le and Stern 2021),
+in `amlearn/learn/sam.py`. The learner knows the predicates and each action's parameter
+count; it learns the preconditions and effects. For each action schema:
+
+- the precondition starts as every literal over the schema's parameters, positive and
+  negative, and loses each literal that some observed pre-state falsifies;
+- the effects are the observed changes: false before and true after is an add effect,
+  true before and false after a delete effect.
+
+**Safety.** A plan valid under the learned model is valid under the true model and reaches
+the same states. A true effect never seen as a change was already in the state it would
+produce every time the action was observed, so its literal stays in the learned
+precondition and the effect is a no-op wherever the learned model lets the action run. The
+argument needs deterministic STRIPS, full observability, negative preconditions and
+injective grounding. `tests/test_sam.py` checks the property on every benchmark, from
+demonstrations and from random walks, by validating each learned model's plans under the
+reference and comparing the final states.
+
+**Completeness is what safety costs.** An action never observed is absent from the model.
+A literal true by coincidence in every observation stays a precondition. Both make a
+learned model solve fewer problems than the reference, and the learning curve measures how
+many fewer.
+
+## Demonstrations
+
+A demonstration is a shortest plan under the reference domain, executed with every state
+recorded (`amlearn/traces.py`). Demonstrations are goal-directed, so an action no shortest
+plan takes is never observed. Random walks are the unbiased contrast and are used in the
+safety tests.
+
+## Planning
+
+Breadth-first search (`amlearn/plan/bfs.py`) is the measuring planner: it returns a
+shortest plan, proves unsolvability by exhausting the reachable states, and reports a node
+bound as `limit`, never as a proof. The answer-set planner (`amlearn/plan/asp.py`, clingo,
+incremental horizon) exists to disagree with it: both return shortest plans from the same
+grounding, so their lengths must be equal on every problem both solve.
+
+Both plan over `Domain.relevant`: the injective groundings whose static preconditions hold
+in the initial state. A static atom never changes, so the pruning changes no result.
+
+## Scoring
+
+A learned model is scored on test problems drawn from the largest training size and one
+size beyond it. For each test problem BFS plans under the learned model; the plan is then
+executed under the reference domain by `amlearn/validate.py`. A valid plan counts only on
+a test problem the reference model itself solves within the node bound, and the score is
+the number of such plans over the number of those problems: 100 % is the reference
+model's own score, and no learned model can exceed it.
+
+## The unsafe contrast
+
+`amlearn/learn/optimistic.py` keeps SAM's effects and drops every precondition: the most
+permissive model consistent with what the traces show each action does. It solves at least
+every problem SAM solves; its plans are judged by the same validator.
+
+Every number a study records is a count. Ratios are computed where they are printed, so a
+study file compares exactly across platforms and no rounding rule is part of a result.
+
+## Limits
+
+- Fully observed, noise-free traces only. An atom missing from one observed pre-state
+  removes a true precondition and voids the guarantee; noise and partial observability are
+  not handled.
+- Untyped STRIPS only: no conditional effects, quantifiers, numeric fluents or constants in
+  schemas.
+- BFS bounds the test sizes: blocksworld is tested up to 5 blocks and gripper up to 4 balls.

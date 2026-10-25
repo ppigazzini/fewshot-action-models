@@ -1,0 +1,208 @@
+{
+ "format": 1,
+ "benchmark": "blocksworld",
+ "learner": "optimistic",
+ "planner": "bfs",
+ "max_nodes": 20000,
+ "test_problems": 30,
+ "rows": [
+  {
+   "demos": 1,
+   "seed": 0,
+   "transitions": 2,
+   "actions_learned": 2,
+   "problems": 30,
+   "solved": 8,
+   "valid": 0,
+   "limit": 22,
+   "reference_solved": 30
+  },
+  {
+   "demos": 2,
+   "seed": 0,
+   "transitions": 6,
+   "actions_learned": 3,
+   "problems": 30,
+   "solved": 8,
+   "valid": 0,
+   "limit": 22,
+   "reference_solved": 30
+  },
+  {
+   "demos": 3,
+   "seed": 0,
+   "transitions": 8,
+   "actions_learned": 4,
+   "problems": 30,
+   "solved": 26,
+   "valid": 0,
+   "limit": 4,
+   "reference_solved": 30
+  },
+  {
+   "demos": 5,
+   "seed": 0,
+   "transitions": 20,
+   "actions_learned": 4,
+   "problems": 30,
+   "solved": 26,
+   "valid": 0,
+   "limit": 4,
+   "reference_solved": 30
+  },
+  {
+   "demos": 10,
+   "seed": 0,
+   "transitions": 40,
+   "actions_learned": 4,
+   "problems": 30,
+   "solved": 26,
+   "valid": 0,
+   "limit": 4,
+   "reference_solved": 30
+  },
+  {
+   "demos": 20,
+   "seed": 0,
+   "transitions": 94,
+   "actions_learned": 4,
+   "problems": 30,
+   "solved": 26,
+   "valid": 0,
+   "limit": 4,
+   "reference_solved": 30
+  },
+  {
+   "demos": 1,
+   "seed": 1,
+   "transitions": 6,
+   "actions_learned": 4,
+   "problems": 30,
+   "solved": 23,
+   "valid": 0,
+   "limit": 7,
+   "reference_solved": 30
+  },
+  {
+   "demos": 2,
+   "seed": 1,
+   "transitions": 12,
+   "actions_learned": 4,
+   "problems": 30,
+   "solved": 23,
+   "valid": 0,
+   "limit": 7,
+   "reference_solved": 30
+  },
+  {
+   "demos": 3,
+   "seed": 1,
+   "transitions": 16,
+   "actions_learned": 4,
+   "problems": 30,
+   "solved": 23,
+   "valid": 0,
+   "limit": 7,
+   "reference_solved": 30
+  },
+  {
+   "demos": 5,
+   "seed": 1,
+   "transitions": 22,
+   "actions_learned": 4,
+   "problems": 30,
+   "solved": 23,
+   "valid": 0,
+   "limit": 7,
+   "reference_solved": 30
+  },
+  {
+   "demos": 10,
+   "seed": 1,
+   "transitions": 50,
+   "actions_learned": 4,
+   "problems": 30,
+   "solved": 23,
+   "valid": 0,
+   "limit": 7,
+   "reference_solved": 30
+  },
+  {
+   "demos": 20,
+   "seed": 1,
+   "transitions": 98,
+   "actions_learned": 4,
+   "problems": 30,
+   "solved": 23,
+   "valid": 0,
+   "limit": 7,
+   "reference_solved": 30
+  },
+  {
+   "demos": 1,
+   "seed": 2,
+   "transitions": 6,
+   "actions_learned": 3,
+   "problems": 30,
+   "solved": 25,
+   "valid": 0,
+   "limit": 5,
+   "reference_solved": 30
+  },
+  {
+   "demos": 2,
+   "seed": 2,
+   "transitions": 14,
+   "actions_learned": 4,
+   "problems": 30,
+   "solved": 24,
+   "valid": 0,
+   "limit": 6,
+   "reference_solved": 30
+  },
+  {
+   "demos": 3,
+   "seed": 2,
+   "transitions": 18,
+   "actions_learned": 4,
+   "problems": 30,
+   "solved": 24,
+   "valid": 0,
+   "limit": 6,
+   "reference_solved": 30
+  },
+  {
+   "demos": 5,
+   "seed": 2,
+   "transitions": 28,
+   "actions_learned": 4,
+   "problems": 30,
+   "solved": 24,
+   "valid": 0,
+   "limit": 6,
+   "reference_solved": 30
+  },
+  {
+   "demos": 10,
+   "seed": 2,
+   "transitions": 48,
+   "actions_learned": 4,
+   "problems": 30,
+   "solved": 24,
+   "valid": 0,
+   "limit": 6,
+   "reference_solved": 30
+  },
+  {
+   "demos": 20,
+   "seed": 2,
+   "transitions": 90,
+   "actions_learned": 4,
+   "problems": 30,
+   "solved": 24,
+   "valid": 0,
+   "limit": 6,
+   "reference_solved": 30
+  }
+ ]
+}

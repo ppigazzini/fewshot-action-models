@@ -1,0 +1,18 @@
+cff-version: 1.2.0
+message: "If you use this software, cite it as below."
+title: "fewshot-action-models: safe action-model learning from a few demonstrations"
+type: software
+authors:
+  - family-names: Pigazzini
+    given-names: Pasquale
+    orcid: "https://orcid.org/0009-0004-6977-7317"
+license: Apache-2.0
+version: 0.0.1
+repository-code: "https://github.com/ppigazzini/fewshot-action-models"
+keywords:
+  - action model learning
+  - automated planning
+  - STRIPS
+  - PDDL
+  - answer set programming
+  - abstraction

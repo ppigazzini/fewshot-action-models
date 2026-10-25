@@ -1,0 +1,82 @@
+[project]
+name = "fewshot-action-models"
+version = "0.0.1"
+description = "Learns STRIPS action models from a few demonstrations and scores the plans they produce against a reference model"
+readme = "README.md"
+license = "Apache-2.0"
+license-files = ["LICENSE"]
+authors = [{ name = "Pasquale Pigazzini" }]
+requires-python = ">=3.14"
+dependencies = [
+    # The range markers (`Ge`) the study file declares its counts with. valgebra reads them
+    # structurally and does not depend on the package, so this is a direct dependency.
+    "annotated-types>=0.8.0",
+    # The second planner. Breadth-first search and the ASP encoding must return plans of
+    # equal length on every reference problem; a disagreement is a grounding or semantics
+    # defect in one of them, and neither can find it alone.
+    "clingo>=5.8.2",
+    # `TypedDict(closed=True)` (PEP 728) is in `typing` from 3.15 only.
+    "typing-extensions>=4.16.0",
+    # Pre-alpha, so pinned below 0.1, and confined to `amlearn/study.py`, where it checks
+    # the shape of the one file this code reads back. A 0.0.x minor is a breaking release,
+    # so the floor moves with each release.
+    "valgebra>=0.0.20,<0.1",
+]
+
+[dependency-groups]
+dev = [
+    "pre-commit>=4.7.0",
+    "pytest>=9.1.1",
+    "ruff>=0.17.2",
+    "ty>=0.0.91",
+]
+
+[build-system]
+requires = ["hatchling>=1.32.4"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["amlearn"]
+
+[tool.uv]
+default-groups = ["dev"]
+
+[tool.pytest.ini_options]
+addopts = "-q"
+testpaths = ["tests"]
+# A search that never terminates is a CI job that runs to the runner's limit and reports
+# nothing; faulthandler dumps every thread's stack and exits, so the log names where it
+# stopped.
+faulthandler_timeout = 600
+faulthandler_exit_on_timeout = true
+markers = ["slow: full learning curves; minutes, not seconds"]
+
+[tool.ty.environment]
+python-version = "3.14"
+
+[tool.ruff]
+line-length = 100
+target-version = "py314"
+
+[tool.ruff.lint]
+select = ["ALL"]
+ignore = [
+    # --- formatter conflicts: ruff-format owns these ---
+    "COM812", "ISC001",
+    # --- PEP 649: annotations are lazy natively ---
+    "TC001", "TC002", "TC003",
+    # --- deliberate ---
+    "T201",     # print: the tools ARE command line programs; stdout is their output
+    "CPY001",   # missing-copyright-notice: LICENSE covers the tree
+    "S311",     # seeded `random.Random` IS the requirement: every draw must reproduce
+    "D105", "D107",
+    # --- docstring style: numpy convention ---
+    "D203", "D213",
+]
+
+[tool.ruff.lint.pydocstyle]
+convention = "numpy"
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["S101", "D", "ANN", "PLR2004", "INP001", "SLF001"]
+"tools/*" = ["INP001"]

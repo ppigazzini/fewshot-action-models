@@ -1,0 +1,142 @@
+{
+ "format": 1,
+ "benchmark": "gripper",
+ "learner": "sam",
+ "planner": "bfs",
+ "max_nodes": 200000,
+ "test_problems": 30,
+ "rows": [
+  {
+   "demos": 1,
+   "seed": 0,
+   "transitions": 3,
+   "actions_learned": 3,
+   "problems": 30,
+   "solved": 30,
+   "valid": 30,
+   "limit": 0,
+   "reference_solved": 30
+  },
+  {
+   "demos": 2,
+   "seed": 0,
+   "transitions": 6,
+   "actions_learned": 3,
+   "problems": 30,
+   "solved": 30,
+   "valid": 30,
+   "limit": 0,
+   "reference_solved": 30
+  },
+  {
+   "demos": 3,
+   "seed": 0,
+   "transitions": 12,
+   "actions_learned": 3,
+   "problems": 30,
+   "solved": 30,
+   "valid": 30,
+   "limit": 0,
+   "reference_solved": 30
+  },
+  {
+   "demos": 5,
+   "seed": 0,
+   "transitions": 21,
+   "actions_learned": 3,
+   "problems": 30,
+   "solved": 30,
+   "valid": 30,
+   "limit": 0,
+   "reference_solved": 30
+  },
+  {
+   "demos": 1,
+   "seed": 1,
+   "transitions": 4,
+   "actions_learned": 3,
+   "problems": 30,
+   "solved": 30,
+   "valid": 30,
+   "limit": 0,
+   "reference_solved": 30
+  },
+  {
+   "demos": 2,
+   "seed": 1,
+   "transitions": 7,
+   "actions_learned": 3,
+   "problems": 30,
+   "solved": 30,
+   "valid": 30,
+   "limit": 0,
+   "reference_solved": 30
+  },
+  {
+   "demos": 3,
+   "seed": 1,
+   "transitions": 17,
+   "actions_learned": 3,
+   "problems": 30,
+   "solved": 30,
+   "valid": 30,
+   "limit": 0,
+   "reference_solved": 30
+  },
+  {
+   "demos": 5,
+   "seed": 1,
+   "transitions": 25,
+   "actions_learned": 3,
+   "problems": 30,
+   "solved": 30,
+   "valid": 30,
+   "limit": 0,
+   "reference_solved": 30
+  },
+  {
+   "demos": 1,
+   "seed": 2,
+   "transitions": 4,
+   "actions_learned": 3,
+   "problems": 30,
+   "solved": 30,
+   "valid": 30,
+   "limit": 0,
+   "reference_solved": 30
+  },
+  {
+   "demos": 2,
+   "seed": 2,
+   "transitions": 9,
+   "actions_learned": 3,
+   "problems": 30,
+   "solved": 30,
+   "valid": 30,
+   "limit": 0,
+   "reference_solved": 30
+  },
+  {
+   "demos": 3,
+   "seed": 2,
+   "transitions": 12,
+   "actions_learned": 3,
+   "problems": 30,
+   "solved": 30,
+   "valid": 30,
+   "limit": 0,
+   "reference_solved": 30
+  },
+  {
+   "demos": 5,
+   "seed": 2,
+   "transitions": 19,
+   "actions_learned": 3,
+   "problems": 30,
+   "solved": 30,
+   "valid": 30,
+   "limit": 0,
+   "reference_solved": 30
+  }
+ ]
+}
