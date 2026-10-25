@@ -51,6 +51,19 @@ line 2: expected valid JSON, got expected value at line 1 column 12 [json_invali
 Each step must also start in the state the step before it ended in. A step with the wrong
 arity would otherwise prune a true precondition and void the safety guarantee.
 
+And one STRIPS model without constants must explain every step: the model SAM learns from
+the whole file replays each one. A step it does not replay is reported with the atom it
+gets wrong:
+
+```
+line 2: steps[3]: clear(zz) changes, but stack(b2,b1) does not name zz
+line 4: steps[4]: holding(b1) is false after pick-up(b1), but another pick-up step adds holding(?x)
+```
+
+The first is a change no action schema without constants makes; the second, an atom
+dropped from one recorded state, which the other pick-up steps contradict. The safety guarantee is stated for traces such a model
+produced, so a file no such model explains is refused.
+
 ## Run a learning curve
 
 ```bash

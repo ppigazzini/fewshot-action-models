@@ -4,7 +4,7 @@ import pytest
 
 from amlearn.domains import draw
 from amlearn.learn import Signature, optimistic
-from amlearn.learn.sam import learn
+from amlearn.learn.sam import learn, unexplained
 from amlearn.plan.bfs import bfs
 from amlearn.strips import Transition
 from amlearn.traces import demonstrate, execute, random_walk
@@ -88,6 +88,46 @@ class TestTheoremStepByStep:
                 assert truth.applicable(state)
                 state = truth.apply(state)
                 assert state == step.next_state
+
+
+PICK_A = Transition(
+    frozenset({("clear", "a"), ("ontable", "a"), ("handempty",)}),
+    ("pick-up", "a"),
+    frozenset({("holding", "a")}),
+)
+B_ON_TABLE = frozenset({("clear", "b"), ("ontable", "b"), ("handempty",)})
+
+
+class TestReplay:
+    @pytest.mark.parametrize("seed", range(3))
+    def test_the_learned_model_replays_every_step_it_learned_from(self, bench, seed):
+        rng = random.Random(f"{bench.name}:replay:{seed}")
+        problems = draw(bench, rng, 3, bench.train_sizes)
+        traces = _traces(bench, seed, 5) + [random_walk(bench.domain, p, 15, rng) for p in problems]
+        model = learn(Signature.of(bench.domain), traces)
+        assert [r for trace in traces for step in trace for r in unexplained(model, step)] == []
+
+    def test_a_change_the_action_does_not_name_is_unexplained(self, blocks):
+        step = Transition(PICK_A.state, PICK_A.action, PICK_A.next_state | {("clear", "b")})
+        model = learn(Signature.of(blocks.domain), [(step,)])
+        assert unexplained(model, step) == ["clear(b) changes, but pick-up(a) does not name b"]
+
+    def test_an_add_effect_another_step_shows_must_happen(self, blocks):
+        failed = Transition(B_ON_TABLE, ("pick-up", "b"), frozenset())
+        model = learn(Signature.of(blocks.domain), [(PICK_A,), (failed,)])
+        assert unexplained(model, PICK_A) == []
+        assert unexplained(model, failed) == [
+            "holding(b) is false after pick-up(b), but another pick-up step adds holding(?x)"
+        ]
+
+    def test_a_delete_effect_another_step_shows_must_happen(self, blocks):
+        kept = Transition(
+            B_ON_TABLE, ("pick-up", "b"), frozenset({("holding", "b"), ("handempty",)})
+        )
+        model = learn(Signature.of(blocks.domain), [(PICK_A,), (kept,)])
+        assert unexplained(model, kept) == [
+            "handempty still holds after pick-up(b), but another pick-up step deletes handempty"
+        ]
 
 
 def test_the_optimistic_model_finds_plans_the_reference_refuses(blocks):

@@ -19,12 +19,24 @@ The price of safety is completeness. An unobserved action is absent from the mod
 literal that held by coincidence in every observation stays a precondition, so a learned
 model solves fewer problems than the true one. How many fewer, as a function of the number
 of demonstrations, is the learning curve this package measures.
+
+Whether some model meets the assumptions can be read off the traces: `unexplained` replays
+each step under the learned model and names every atom it gets wrong.
 """
 
 from collections.abc import Iterable
 
 from amlearn.learn import Signature
-from amlearn.strips import Action, Atom, Domain, Trace, is_injective, lifted_atoms
+from amlearn.strips import (
+    Action,
+    Atom,
+    Domain,
+    Trace,
+    Transition,
+    is_injective,
+    lifted_atoms,
+    render,
+)
 
 
 def learn(signature: Signature, traces: Iterable[Trace]) -> Domain:
@@ -78,3 +90,45 @@ def learn(signature: Signature, traces: Iterable[Trace]) -> Domain:
         for name in sorted(pre_pos)
     }
     return Domain(f"{signature.name}-sam", dict(signature.predicates), actions)
+
+
+def unexplained(model: Domain, step: Transition) -> list[str]:
+    """Return every atom ``model`` gets wrong replaying ``step``, one reason per atom.
+
+    ``model`` is the one `learn` returns from traces that include ``step``. Then every step
+    replays with an empty list exactly when some STRIPS model without constants reproduces
+    all of them under injective grounding: the effects of any such model contain every
+    change observed, so the learned model reproduces each step it learned from, and it is
+    such a model itself. A reason therefore refutes the traces, not the learner: an atom
+    changes that the action does not name, which no schema without constants can do, or an
+    effect another step of the same action shows fails to happen here.
+
+    A step that repeats an object is skipped, as `learn` skips it.
+    """
+    name, objects = step.action[0], step.action[1:]
+    if not is_injective(objects):
+        return []
+    action = model.actions[name]
+    replayed = action.ground(objects).apply(step.state)
+    param = dict(zip(objects, action.params, strict=True))
+    reasons: list[str] = []
+    for atom in sorted(replayed ^ step.next_state):
+        outside = sorted({o for o in atom[1:] if o not in param})
+        if outside:
+            reasons.append(
+                f"{render(atom)} changes, but {render(step.action)} does not name"
+                f" {' or '.join(outside)}"
+            )
+            continue
+        lifted = render((atom[0], *(param[o] for o in atom[1:])))
+        if atom in step.next_state:
+            reasons.append(
+                f"{render(atom)} still holds after {render(step.action)},"
+                f" but another {name} step deletes {lifted}"
+            )
+        else:
+            reasons.append(
+                f"{render(atom)} is false after {render(step.action)},"
+                f" but another {name} step adds {lifted}"
+            )
+    return reasons

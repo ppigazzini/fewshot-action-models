@@ -42,6 +42,9 @@ A demonstration is a shortest plan under the reference domain, executed with eve
 recorded (`amlearn/traces.py`). Demonstrations are goal-directed, so an action no shortest
 plan takes is never observed. Traces recorded elsewhere are read from a trace file
 (`amlearn/tracefile.py`), checked against the signature before they reach the learner.
+A file is refused when no STRIPS model without constants explains every step. The test is
+exact: such a model contains every observed change among its effects, so the model SAM
+learns replays each step whenever one exists, and it is one itself.
 Random walks are the unbiased contrast and are used in the safety tests.
 
 ## Planning
@@ -76,8 +79,9 @@ study file compares exactly across platforms and no rounding rule is part of a r
 ## Limits
 
 - Fully observed, noise-free traces only. An atom missing from one observed pre-state
-  removes a true precondition and voids the guarantee; noise and partial observability are
-  not handled.
+  removes a true precondition and voids the guarantee. A trace file no STRIPS model
+  explains is refused; noise some STRIPS model still explains passes, an atom missing from
+  every state of a trace for one. Partial observability is not handled.
 - Untyped STRIPS only: no conditional effects, quantifiers, numeric fluents or constants in
   schemas.
 - BFS bounds the test sizes: blocksworld is tested up to 5 blocks, gripper up to 4 balls,

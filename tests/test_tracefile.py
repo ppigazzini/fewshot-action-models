@@ -100,6 +100,21 @@ class TestRefusals:
             schema.dumps([(step,)])
 
 
+class TestStripsConsistency:
+    def test_a_change_no_action_without_constants_makes_is_refused_at_its_line_and_step(
+        self, blocks
+    ):
+        schema = TraceSchema.of(Signature.of(blocks.domain))
+        lines = schema.dumps(_demos(blocks, 2)).splitlines()
+        record = json.loads(lines[1])
+        record["steps"][-1]["next_state"].append(["clear", "zz"])
+        text = "\n".join([lines[0], json.dumps(record)])
+        last = len(record["steps"]) - 1
+        with pytest.raises(TraceFileError) as caught:
+            schema.loads(text)
+        assert str(caught.value).startswith(f"line 2: steps[{last}]: clear(zz) changes, but ")
+
+
 def test_the_tool_learns_from_a_trace_file_and_refuses_a_bad_one(tmp_path):
     traces, bad = tmp_path / "demos.jsonl", tmp_path / "bad.jsonl"
     tool = [sys.executable, str(ROOT / "tools" / "learn.py"), "blocksworld", "--demos", "4"]

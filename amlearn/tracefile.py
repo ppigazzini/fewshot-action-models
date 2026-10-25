@@ -18,8 +18,11 @@ each line in one pass and reports every failure with its path (``steps[3].state[
 on every line, before anything is learned: a step whose atom has the wrong arity would
 otherwise prune a true precondition and void the safety guarantee.
 
-The one rule between two parts of a trace -- each step starts where the step before it
-ended -- is plain Python in `_check_continuity`.
+Two rules span more than one part of a file and are plain Python. Each step starts where
+the step before it ended (`_check_continuity`). And one STRIPS model without constants
+explains every step (`_check_strips`): the model SAM learns from the whole file replays
+each one, or no such model exists and the safety guarantee, stated for traces such a
+model produced, has nothing to stand on.
 """
 
 import json
@@ -42,6 +45,7 @@ from amlearn._valgebra import (
     union,
 )
 from amlearn.learn import Signature
+from amlearn.learn.sam import learn, unexplained
 from amlearn.strips import Atom, Trace, Transition
 
 #: An object's name.
@@ -119,6 +123,7 @@ class TraceSchema:
         """Read every trace of a JSON Lines text, reporting every failure on every line."""
         failures: list[str] = []
         traces: list[Trace] = []
+        numbers: list[int] = []
         for number, line in enumerate(text.splitlines(), 1):
             if not line.strip():
                 continue
@@ -133,6 +138,8 @@ class TraceSchema:
             trace = _trace(record["steps"])
             failures += [f"line {number}: {f}" for f in _check_continuity(trace)]
             traces.append(trace)
+            numbers.append(number)
+        failures += _check_strips(self.signature, numbers, traces)
         if failures:
             shown = failures[:MAX_REPORTED]
             more = len(failures) - len(shown)
@@ -193,4 +200,15 @@ def _check_continuity(trace: Trace) -> list[str]:
         f"steps[{i}].state differs from steps[{i - 1}].next_state"
         for i in range(1, len(trace))
         if trace[i].state != trace[i - 1].next_state
+    ]
+
+
+def _check_strips(signature: Signature, numbers: list[int], traces: list[Trace]) -> list[str]:
+    """Return every step the model SAM learns from the whole file does not replay."""
+    model = learn(signature, traces)
+    return [
+        f"line {number}: steps[{i}]: {reason}"
+        for number, trace in zip(numbers, traces, strict=True)
+        for i, step in enumerate(trace)
+        for reason in unexplained(model, step)
     ]
