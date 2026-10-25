@@ -131,3 +131,32 @@ def test_the_tool_learns_from_a_trace_file_and_refuses_a_bad_one(tmp_path):
     )
     assert refused.returncode == 1
     assert "stack takes 2 objects, got 1" in refused.stderr
+
+
+LAMPS = """(define (domain lamps) (:predicates (lit ?l) (dark ?l))
+  (:action switch-on :parameters (?l)))"""
+LAMP_TRACE = (
+    '{"steps": [{"state": [["dark", "l1"]], "action": ["switch-on", "l1"],'
+    ' "next_state": [["lit", "l1"]]}]}\n'
+)
+
+
+class TestOwnDomain:
+    def _learn(self, tmp_path, *extra):
+        domain = tmp_path / "lamps.pddl"
+        domain.write_text(LAMPS)
+        tool = [sys.executable, str(ROOT / "tools" / "learn.py"), "--domain", str(domain)]
+        return subprocess.run([*tool, *extra], capture_output=True, text=True, check=False)
+
+    def test_the_tool_learns_against_a_signature_read_from_a_domain_file(self, tmp_path):
+        traces = tmp_path / "lamps.jsonl"
+        traces.write_text(LAMP_TRACE)
+        out = self._learn(tmp_path, "--traces", str(traces))
+        assert out.returncode == 0, out.stderr
+        assert ":precondition (and (dark ?l) (not (lit ?l)))" in out.stdout
+        assert ":effect (and (lit ?l) (not (dark ?l))))" in out.stdout
+
+    def test_a_domain_without_traces_is_refused(self, tmp_path):
+        out = self._learn(tmp_path)
+        assert out.returncode == 2
+        assert "--domain needs --traces" in out.stderr

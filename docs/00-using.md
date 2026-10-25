@@ -36,10 +36,12 @@ uv run python tools/learn.py blocksworld --demos 5 --write-traces demos.jsonl
 uv run python tools/learn.py blocksworld --traces demos.jsonl
 ```
 
-The benchmark names the signature the file is read against; `amlearn.tracefile.TraceSchema`
-compiles a valgebra schema from it, so an atom must be one of the predicates with exactly
-its arity, an action one of the actions with exactly its parameter count, an object a
-non-empty string, and a step carries no key the format does not name. Every failure on
+The benchmark names the signature the file is read against, or `--domain` reads it from a
+PDDL domain file ([Use another domain](#use-another-domain)).
+`amlearn.tracefile.TraceSchema` compiles a valgebra schema from it, so an atom must be one
+of the predicates with exactly its arity, an action one of the actions with exactly its
+parameter count, an object a non-empty string, and a step carries no key the format does
+not name. Every failure on
 every line is reported before anything is learned, with its line and path:
 
 ```
@@ -97,6 +99,19 @@ exits 1 on any count that differs; CI runs it on every published study.
 ## Use another domain
 
 A domain in the supported PDDL subset (untyped STRIPS, negative preconditions, no constants
-in schemas) is read with `amlearn.pddl.load_domain`. A benchmark adds a problem generator and
-its train and test sizes to `amlearn.domains.BENCHMARKS`. A typed domain is rewritten with
-type predicates, as gripper's `room`, `ball` and `gripper` are.
+in schemas) is read with `amlearn.pddl.load_domain`. To learn it from recorded traces, the
+domain file needs only its predicates and each action's parameters; preconditions and
+effects in it are not read by the learner:
+
+```bash
+uv run python tools/learn.py --domain lamps.pddl --traces lamps.jsonl
+```
+
+```
+(define (domain lamps) (:predicates (lit ?l) (dark ?l))
+  (:action switch-on :parameters (?l)))
+```
+
+A benchmark adds a problem generator and its train and test sizes to
+`amlearn.domains.BENCHMARKS`. A typed domain is rewritten with type predicates, as
+gripper's `room`, `ball` and `gripper` are.
