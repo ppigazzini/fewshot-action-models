@@ -6,10 +6,15 @@ conjunction of atoms. Types, constants in schemas, conditional effects, quantifi
 numeric fluents raise `PddlError` naming the construct, so a domain outside the subset
 fails when it is read rather than being learned as something it is not.
 
-The writer emits what the reader accepts, so a learned model can be handed to any planner
-or validator that reads PDDL.
+Grounding is injective, and a PDDL planner binds two parameters to one object unless a
+precondition forbids it, so the writer states the semantics: ``(not (= ?x ?y))`` for every
+pair of parameters, under ``:equality``. The reader drops such an inequality, which the
+semantics already implies, and refuses any other use of ``=``. The writer emits what the
+reader accepts, so a learned model can be handed to any planner or validator that reads
+PDDL and is grounded there as it is here.
 """
 
+import itertools
 from collections.abc import Iterable
 from pathlib import Path
 
@@ -139,12 +144,28 @@ def _action(item: list[SExpr]) -> Action:
         msg = f"{name}: typed or malformed parameters; the subset is untyped"
         raise PddlError(msg)
     params = tuple(_symbol(p) for p in raw_params)
-    pre_pos, pre_neg = _literals(fields.get(":precondition", ["and"]))
+    pre_pos, pre_neg = _literals(_drop_distinct(name, params, fields.get(":precondition", ["and"])))
     add, delete = _literals(fields.get(":effect", ["and"]))
     try:
         return Action(name, params, pre_pos, pre_neg, add, delete)
     except StripsError as exc:
         raise PddlError(str(exc)) from exc
+
+
+def _drop_distinct(name: str, params: tuple[str, ...], expr: SExpr) -> SExpr:
+    """Drop each ``(not (= ?a ?b))`` over two parameters from a precondition."""
+    parts: list[SExpr] = expr[1:] if isinstance(expr, list) and expr[:1] == ["and"] else [expr]
+    kept: list[SExpr] = []
+    for part in parts:
+        inner = part[1] if isinstance(part, list) and part[:1] == ["not"] and part[1:] else None
+        if not (isinstance(inner, list) and inner[:1] == ["="]):
+            kept.append(part)
+            continue
+        args = inner[1:]
+        if len(args) != 2 or args[0] == args[1] or not all(a in params for a in args):  # noqa: PLR2004
+            msg = f"{name}: {part!r} is not an inequality of two parameters"
+            raise PddlError(msg)
+    return ["and", *kept]
 
 
 def read_domain(text: str) -> Domain:
@@ -207,8 +228,9 @@ def _fmt(atom: Atom) -> str:
     return f"({' '.join(atom)})"
 
 
-def _conj(pos: Iterable[Atom], neg: Iterable[Atom] = ()) -> str:
+def _conj(pos: Iterable[Atom], neg: Iterable[Atom] = (), distinct: tuple[str, ...] = ()) -> str:
     parts = [_fmt(a) for a in sorted(pos)] + [f"(not {_fmt(a)})" for a in sorted(neg)]
+    parts += [f"(not (= {a} {b}))" for a, b in itertools.combinations(distinct, 2)]
     return f"(and {' '.join(parts)})" if parts else "(and)"
 
 
@@ -219,6 +241,8 @@ def write_domain(domain: Domain) -> str:
         for p in sorted(domain.predicates)
     )
     reqs = ":strips :negative-preconditions"
+    if any(len(a.params) > 1 for a in domain.actions.values()):
+        reqs += " :equality"
     lines = [
         f"(define (domain {domain.name})",
         f"  (:requirements {reqs})",
@@ -229,7 +253,7 @@ def write_domain(domain: Domain) -> str:
         lines += [
             f"  (:action {a.name}",
             f"    :parameters ({' '.join(a.params)})",
-            f"    :precondition {_conj(a.pre_pos, a.pre_neg)}",
+            f"    :precondition {_conj(a.pre_pos, a.pre_neg, a.params)}",
             f"    :effect {_conj(a.add, a.delete)})",
         ]
     lines.append(")")

@@ -1,6 +1,10 @@
 import pytest
 
+from amlearn.domains import draw
+from amlearn.learn import Signature
+from amlearn.learn.sam import learn
 from amlearn.pddl import PddlError, read_domain, read_problem, write_domain, write_problem
+from amlearn.traces import demonstrate
 
 
 class TestReader:
@@ -25,6 +29,12 @@ class TestReader:
         with pytest.raises(PddlError, match="not parameters"):
             read_domain(text)
 
+    def test_it_drops_an_inequality_of_two_parameters(self):
+        text = """(define (domain d) (:predicates (p ?x))
+          (:action a :parameters (?x ?y)
+           :precondition (and (p ?x) (not (= ?x ?y))) :effect (p ?y)))"""
+        assert read_domain(text).actions["a"].pre_pos == {("p", "?x")}
+
     def test_it_ignores_comments_and_case(self):
         d = read_domain("; note\n(DEFINE (DOMAIN D) (:PREDICATES (P ?X)))")
         assert d.predicates == {"p": 1}
@@ -35,6 +45,17 @@ class TestRoundTrip:
         again = read_domain(write_domain(bench.domain))
         assert again.predicates == bench.domain.predicates
         assert again.actions == bench.domain.actions
+
+    def test_a_learned_model_reads_back_equal(self, bench, rng):
+        traces = [demonstrate(bench.domain, p) for p in draw(bench, rng, 3, bench.train_sizes)]
+        model = learn(Signature.of(bench.domain), traces)
+        assert any(a.pre_neg for a in model.actions.values())
+        assert read_domain(write_domain(model)).actions == model.actions
+
+    def test_the_writer_states_injective_grounding_as_inequalities(self, blocks):
+        text = write_domain(blocks.domain)
+        assert ":equality" in text
+        assert "(not (= ?x ?y))" in text
 
     def test_a_written_problem_reads_back_equal(self, bench, rng):
         problem = bench.generate(rng, bench.train_sizes[0])
@@ -60,6 +81,18 @@ class TestMalformedText:
                 "action a defined twice",
             ),
             (DOMAIN.format("(:action a :parameters (?x) :effect (q ?x))"), "undeclared"),
+            (
+                DOMAIN.format("(:action a :parameters (?x) :precondition (not (= ?x ?x)))"),
+                "not an inequality of two parameters",
+            ),
+            (
+                DOMAIN.format("(:action a :parameters (?x) :precondition (not (= ?x c)))"),
+                "not an inequality of two parameters",
+            ),
+            (
+                DOMAIN.format("(:action a :parameters (?x ?y) :precondition (= ?x ?y))"),
+                "'=' is outside the supported subset",
+            ),
         ],
     )
     def test_a_malformed_domain_is_a_pddl_error_naming_the_fault(self, text, expected):
