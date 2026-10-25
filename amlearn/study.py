@@ -16,11 +16,8 @@ from typing import Annotated, Literal
 
 from annotated_types import Ge
 from typing_extensions import TypedDict
-from valgebra import ValidationError, Validator, complement
 
-#: Every value but a `bool`. `bool` subclasses `int`, so a count declared `int` would
-#: otherwise admit ``true`` and read it as 1.
-NOT_BOOL = complement(bool)
+from amlearn._valgebra import NOT_BOOL, ValidationError, Validator
 
 type Count = Annotated[int, NOT_BOOL, Ge(0)]
 type Positive = Annotated[int, NOT_BOOL, Ge(1)]

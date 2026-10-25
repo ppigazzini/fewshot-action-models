@@ -40,8 +40,9 @@ many fewer.
 
 A demonstration is a shortest plan under the reference domain, executed with every state
 recorded (`amlearn/traces.py`). Demonstrations are goal-directed, so an action no shortest
-plan takes is never observed. Random walks are the unbiased contrast and are used in the
-safety tests.
+plan takes is never observed. Traces recorded elsewhere are read from a trace file
+(`amlearn/tracefile.py`), checked against the signature before they reach the learner.
+Random walks are the unbiased contrast and are used in the safety tests.
 
 ## Planning
 

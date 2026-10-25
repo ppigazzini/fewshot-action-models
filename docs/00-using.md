@@ -19,6 +19,38 @@ Draws 5 training problems, demonstrates each with a shortest plan under the refe
 domain, learns from the traces and prints the learned domain as PDDL. The same seed draws
 the same problems as `tools/curve.py`, so the printed model is the one a curve row scores.
 
+## Learn from recorded traces
+
+Demonstrations recorded elsewhere — a simulator, a robot log, another planner — are read
+from a trace file: JSON Lines, one trace per line, each step a state, an action and the
+state after it.
+
+```json
+{"steps": [{"state": [["clear", "a"], ["handempty"], ["ontable", "a"]],
+            "action": ["pick-up", "a"],
+            "next_state": [["holding", "a"]]}]}
+```
+
+```bash
+uv run python tools/learn.py blocksworld --demos 5 --write-traces demos.jsonl
+uv run python tools/learn.py blocksworld --traces demos.jsonl
+```
+
+The benchmark names the signature the file is read against; `amlearn.tracefile.TraceSchema`
+compiles a valgebra schema from it, so an atom must be one of the predicates with exactly
+its arity, an action one of the actions with exactly its parameter count, an object a
+non-empty string, and a step carries no key the format does not name. Every failure on
+every line is reported before anything is learned, with its line and path:
+
+```
+line 1: at steps[0].action: stack takes 2 objects, got 1
+line 1: at steps[0].state[0][1]: expected length >= 1, got '' [too_short]
+line 2: expected valid JSON, got expected value at line 1 column 12 [json_invalid]
+```
+
+Each step must also start in the state the step before it ended in. A step with the wrong
+arity would otherwise prune a true precondition and void the safety guarantee.
+
 ## Run a learning curve
 
 ```bash

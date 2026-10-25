@@ -40,8 +40,11 @@ count moved.
 - Every draw goes through a seeded `random.Random` and every iteration that
   chooses something iterates a sorted sequence: a count must not depend on
   `PYTHONHASHSEED`.
-- valgebra is confined to `amlearn/study.py`. A second consumer needs a reason
-  written beside it.
+- `amlearn/_valgebra.py` is the only module that imports valgebra, and derived
+  forms are recipes written there once; `tests/test_boundaries.py` holds it.
+  Its consumers are the two files the code reads back from outside: the study
+  file (`amlearn/study.py`) and trace files (`amlearn/tracefile.py`). The
+  learner and the planners work on literal sets, which Python decides exactly.
 - Tests are named as sentences (`test_delete_comes_before_add`) and grouped in
   `Test...` classes by the behaviour they pin down.
 - `__DEV/` holds internal notes and is never committed. Read

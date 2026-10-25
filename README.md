@@ -18,6 +18,7 @@ amlearn/strips.py        lifted STRIPS with negative preconditions; injective gr
 amlearn/pddl.py          the PDDL subset, read and written
 amlearn/domains/         reference domains (PDDL) and their problem generators
 amlearn/traces.py        demonstrations: shortest plans executed under the reference
+amlearn/tracefile.py     trace files: recorded demonstrations, checked against the signature
 amlearn/learn/sam.py     safe action-model learning
 amlearn/learn/optimistic.py  the unsafe contrast: observed effects, no preconditions
 amlearn/plan/bfs.py      breadth-first search: shortest plans, proofs of unsolvability
@@ -25,6 +26,7 @@ amlearn/plan/asp.py      answer-set planning with clingo: the cross-check
 amlearn/validate.py      plan validation against the reference model
 amlearn/curve.py         the learning curve; every number is a count
 amlearn/study.py         the study file format, checked with valgebra
+amlearn/_valgebra.py     the one module that imports valgebra, and its recipes
 tools/                   the committed commands that produce published numbers
 ```
 
@@ -33,6 +35,7 @@ tools/                   the committed commands that produce published numbers
 ```bash
 uv sync                                              # one lockfile; dev tools included
 uv run python tools/learn.py blocksworld --demos 5   # print a learned model as PDDL
+uv run python tools/learn.py blocksworld --traces demos.jsonl  # learn from recorded traces
 uv run python tools/curve.py blocksworld             # the learning curve, 3 seeds
 uv run python tools/curve.py blocksworld --check docs/studies/blocksworld.json
 uv run python tools/curve.py blocksworld --check docs/studies/blocksworld-optimistic.json

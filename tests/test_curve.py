@@ -48,7 +48,7 @@ def test_a_study_does_not_depend_on_the_hash_seed(tmp_path):
     for hash_seed in ("0", "4242"):
         target = tmp_path / f"study-{hash_seed}.json"
         env = dict(os.environ, PYTHONHASHSEED=hash_seed)
-        subprocess.run(  # noqa: S603 - the interpreter running the tests, on a committed tool
+        subprocess.run(
             [
                 sys.executable,
                 str(root / "tools" / "curve.py"),

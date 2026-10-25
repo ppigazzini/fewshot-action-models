@@ -24,7 +24,7 @@
   B. Kaufmann, T. Schaub. Multi-shot ASP solving with clingo. Theory and Practice of Logic
   Programming 19(1), 2019.
 - [valgebra](https://github.com/ppigazzini/valgebra) (MIT or Apache-2.0): the study file
-  check.
+  and trace file checks.
 
 ## Domains
 
