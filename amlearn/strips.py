@@ -138,12 +138,40 @@ class Domain:
         """
         static = self.static_predicates()
         init = problem.init
-        return [
-            g
-            for g in self.grounded(problem.objects)
-            if all(f in init for f in g.pre_pos if f[0] in static)
-            and not any(f in init for f in g.pre_neg if f[0] in static)
-        ]
+        objs = sorted(problem.objects)
+        out: list[GroundedAction] = []
+        for name in sorted(self.actions):
+            action = self.actions[name]
+            # Narrow each parameter by its unary static literals before binding: the
+            # product of the narrowed lists, in parameter order, is the subsequence of
+            # `grounded`'s permutations that survives, in the same order, and it skips the
+            # thousands of bindings a four-parameter action has over a dozen objects.
+            choices = [
+                [
+                    o
+                    for o in objs
+                    if all(
+                        (f[0], o) in init
+                        for f in action.pre_pos
+                        if f[0] in static and f[1:] == (p,)
+                    )
+                    and not any(
+                        (f[0], o) in init
+                        for f in action.pre_neg
+                        if f[0] in static and f[1:] == (p,)
+                    )
+                ]
+                for p in action.params
+            ]
+            for binding in itertools.product(*choices):
+                if not is_injective(binding):
+                    continue
+                g = action.ground(binding)
+                if all(f in init for f in g.pre_pos if f[0] in static) and not any(
+                    f in init for f in g.pre_neg if f[0] in static
+                ):
+                    out.append(g)
+        return out
 
 
 @dataclass(frozen=True, slots=True)

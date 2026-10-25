@@ -28,5 +28,5 @@
 
 ## Domains
 
-- Blocksworld (four operators) and Gripper, untyped, from the International Planning
-  Competitions of 2000 and 1998.
+- Blocksworld (four operators), Gripper and Logistics, untyped, from the International
+  Planning Competitions of 2000 and 1998.

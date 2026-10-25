@@ -79,4 +79,5 @@ study file compares exactly across platforms and no rounding rule is part of a r
   not handled.
 - Untyped STRIPS only: no conditional effects, quantifiers, numeric fluents or constants in
   schemas.
-- BFS bounds the test sizes: blocksworld is tested up to 5 blocks and gripper up to 4 balls.
+- BFS bounds the test sizes: blocksworld is tested up to 5 blocks, gripper up to 4 balls,
+  logistics up to 3 packages.

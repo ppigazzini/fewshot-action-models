@@ -86,6 +86,34 @@ def gripper_problem(rng: random.Random, n: int) -> Problem:
     return Problem(f"gripper-{n}", objects, frozenset(init), frozenset(goal))
 
 
+def logistics_problem(rng: random.Random, n: int) -> Problem:
+    """Draw ``n`` packages over two cities, each with an airport and a post office.
+
+    One truck per city and one airplane start at random places of their own kind; each
+    package starts and ends at random locations, and at least one must move.
+    """
+    cities = ["c1", "c2"]
+    airports = {c: f"ap{c[1]}" for c in cities}
+    offices = {c: f"po{c[1]}" for c in cities}
+    trucks = {c: f"t{c[1]}" for c in cities}
+    locations = sorted([*airports.values(), *offices.values()])
+    packages = [f"p{i}" for i in range(1, n + 1)]
+    init: set[Atom] = {("city", c) for c in cities} | {("airplane", "a1")}
+    init |= {("location", loc) for loc in locations} | {("airport", a) for a in airports.values()}
+    init |= {("obj", p) for p in packages} | {("truck", t) for t in trucks.values()}
+    for c in cities:
+        init |= {("in-city", airports[c], c), ("in-city", offices[c], c)}
+        init.add(("at", trucks[c], rng.choice([airports[c], offices[c]])))
+    init.add(("at", "a1", rng.choice(sorted(airports.values()))))
+    init |= {("at", p, rng.choice(locations)) for p in packages}
+    while True:
+        goal = {("at", p, rng.choice(locations)) for p in packages}
+        if not goal <= init:
+            break
+    objects = tuple(cities + locations + sorted(trucks.values()) + ["a1"] + packages)
+    return Problem(f"logistics-{n}", objects, frozenset(init), frozenset(goal))
+
+
 BENCHMARKS: dict[str, Benchmark] = {
     "blocksworld": Benchmark(
         "blocksworld",
@@ -93,6 +121,13 @@ BENCHMARKS: dict[str, Benchmark] = {
         blocksworld_problem,
         train_sizes=(3, 4),
         test_sizes=(4, 5),
+    ),
+    "logistics": Benchmark(
+        "logistics",
+        load_domain(_HERE / "logistics.pddl"),
+        logistics_problem,
+        train_sizes=(1, 2),
+        test_sizes=(2, 3),
     ),
     "gripper": Benchmark(
         "gripper",

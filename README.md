@@ -56,6 +56,8 @@ Blocksworld, training on 3–4 blocks, testing on 4–5 (`docs/04-results.md`):
 SAM over 5 seeds of 50 test problems, the optimistic baseline over 3 seeds of 30. The
 optimistic model, which keeps the observed effects and drops every precondition, finds a
 plan for 81 % of the test problems and not one of them executes under the reference.
+On Logistics (six actions, 1–2 packages in training, 2–3 in test) SAM scores 45.2 % at
+one demonstration and 100 % from two, every plan valid.
 
 See [`docs/`](docs/README.md) for the method, the results and the development rules.
 

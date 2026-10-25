@@ -22,3 +22,4 @@ jobs:
       - run: uv run python tools/curve.py blocksworld --check docs/studies/blocksworld.json
       - run: uv run python tools/curve.py gripper --check docs/studies/gripper.json
       - run: uv run python tools/curve.py blocksworld --check docs/studies/blocksworld-optimistic.json
+      - run: uv run python tools/curve.py logistics --check docs/studies/logistics.json

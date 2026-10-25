@@ -30,6 +30,30 @@ one beyond); 5 seeds, 50 test problems per seed. Mean over seeds, per-seed range
   pre-state stays in the model.
 - 10 demonstrations (43.6 transitions on average) reach the reference score in all 5 seeds.
 
+## Logistics
+
+```bash
+uv run python tools/curve.py logistics --check docs/studies/logistics.json
+```
+
+Six actions over two cities, each with an airport and a post office, one truck per city
+and one airplane; training problems of 1–2 packages, test problems of 2–3; 5 seeds, 50
+test problems per seed.
+
+| demos | transitions | actions | solved % | valid % of solved | score vs reference % |
+|---:|---:|---:|---:|---:|---:|
+| 1 | 8.0 | 4.8 | 45.2 (0-100) | 100.0 (100-100) | 45.2 (0-100) |
+| 2 | 16.4 | 6.0 | 100.0 (100-100) | 100.0 (100-100) | 100.0 (100-100) |
+| 3 | 25.2 | 6.0 | 100.0 (100-100) | 100.0 (100-100) | 100.0 (100-100) |
+| 5 | 38.0 | 6.0 | 100.0 (100-100) | 100.0 (100-100) | 100.0 (100-100) |
+| 10 | 72.6 | 6.0 | 100.0 (100-100) | 100.0 (100-100) | 100.0 (100-100) |
+| 20 | 146.0 | 6.0 | 100.0 (100-100) | 100.0 (100-100) | 100.0 (100-100) |
+
+One demonstration observes 4.8 of the 6 actions on average; the seeds whose first
+demonstration moves a package between cities observe the airplane's actions and solve
+every test problem, the others solve none. Two demonstrations observe all six in every
+seed.
+
 ## What safety buys
 
 ```bash
@@ -68,6 +92,8 @@ planners; it does not produce a curve.
 
 ## Not measured
 
+- The optimistic baseline on Logistics. Without preconditions nothing narrows the 11,880
+  bindings of `drive-truck` over a dozen objects, and every search state tries them all.
 - Noisy or partially observed traces.
 - Domains where a shortest plan rarely uses some action, which is where goal-directed
   demonstrations and random walks should part.
