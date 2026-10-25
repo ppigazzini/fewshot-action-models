@@ -62,6 +62,12 @@ class TestDomain:
         assert kept == [label for label in everything if label in set(kept)]
 
 
+class TestProblem:
+    def test_it_refuses_an_object_named_twice(self):
+        with pytest.raises(StripsError, match=r"more than once: \['o'\]"):
+            Problem("p", ("o", "o"), frozenset(), frozenset())
+
+
 def test_lifted_atoms_include_repeated_variables():
     assert list(lifted_atoms({"on": 2}, ("?x", "?y"))) == [
         ("on", "?x", "?x"),

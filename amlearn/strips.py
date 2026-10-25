@@ -183,6 +183,14 @@ class Problem:
     init: State
     goal: frozenset[Atom]
 
+    def __post_init__(self) -> None:
+        # A repeated object makes `Domain.grounded` bind it to two parameters at once, which
+        # is the one grounding the injective semantics excludes.
+        if not is_injective(self.objects):
+            repeated = sorted({o for o in self.objects if self.objects.count(o) > 1})
+            msg = f"{self.name}: objects named more than once: {repeated}"
+            raise StripsError(msg)
+
     def satisfied(self, state: State) -> bool:
         """Return whether ``state`` reaches the goal."""
         return self.goal <= state
