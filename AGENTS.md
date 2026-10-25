@@ -27,6 +27,8 @@ uv run --no-sync pytest                     # the suite, about a minute
 uv run --no-sync python tools/check_markdown.py
 uv run --no-sync python tools/curve.py blocksworld --check docs/studies/blocksworld.json
 uv run --no-sync python tools/curve.py blocksworld --check docs/studies/blocksworld-optimistic.json
+uv run --no-sync python tools/curve.py gripper --check docs/studies/gripper.json
+uv run --no-sync python tools/curve.py logistics --check docs/studies/logistics.json
 ```
 
 All of them must be clean before a commit. A change that moves a published
