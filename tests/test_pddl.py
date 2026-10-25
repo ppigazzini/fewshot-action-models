@@ -44,7 +44,36 @@ class TestRoundTrip:
         assert sorted(again.objects) == sorted(problem.objects)
 
 
-def test_an_action_field_without_a_value_is_a_pddl_error():
-    text = "(define (domain d) (:predicates (p ?x)) (:action a :parameters (?x) :effect))"
-    with pytest.raises(PddlError, match="without a value"):
-        read_domain(text)
+DOMAIN = "(define (domain d) (:predicates (p ?x)) {})"
+PROBLEM = "(define (problem x) (:domain d) (:objects {}) (:init) {})"
+
+
+class TestMalformedText:
+    @pytest.mark.parametrize(
+        ("text", "expected"),
+        [
+            (DOMAIN.format("(:action a :parameters (?x) :effect)"), "without a value"),
+            (DOMAIN.format("(:action)"), "without a name"),
+            (DOMAIN.format("(:predicates (q ?x))"), ":predicates appears twice"),
+            (
+                DOMAIN.format("(:action a :parameters (?x)) (:action a :parameters (?x))"),
+                "action a defined twice",
+            ),
+            (DOMAIN.format("(:action a :parameters (?x) :effect (q ?x))"), "undeclared"),
+        ],
+    )
+    def test_a_malformed_domain_is_a_pddl_error_naming_the_fault(self, text, expected):
+        with pytest.raises(PddlError, match=expected):
+            read_domain(text)
+
+    @pytest.mark.parametrize(
+        ("text", "expected"),
+        [
+            (PROBLEM.format("o", "(:goal)"), "holds 0 expressions"),
+            (PROBLEM.format("o", "(:goal (p o) (q o))"), "holds 2 expressions"),
+            (PROBLEM.format("o o", "(:goal (p o))"), "more than once"),
+        ],
+    )
+    def test_a_malformed_problem_is_a_pddl_error_naming_the_fault(self, text, expected):
+        with pytest.raises(PddlError, match=expected):
+            read_problem(text)

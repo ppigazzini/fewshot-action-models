@@ -75,6 +75,9 @@ def _sections(expr: SExpr, kind: str) -> tuple[str, dict[str, list[SExpr]]]:
         key = item[0]
         if key == ":action":
             sections.setdefault(key, []).append(item)
+        elif key in sections:
+            msg = f"{key} appears twice"
+            raise PddlError(msg)
         else:
             sections[key] = item[1:]
     return _symbol(head[1]), sections
@@ -116,6 +119,9 @@ def _literals(expr: SExpr) -> tuple[frozenset[Atom], frozenset[Atom]]:
 
 
 def _action(item: list[SExpr]) -> Action:
+    if not item[1:]:
+        msg = "an :action without a name"
+        raise PddlError(msg)
     name = _symbol(item[1])
     fields: dict[str, SExpr] = {}
     rest = item[2:]
@@ -160,8 +166,14 @@ def read_domain(text: str) -> Domain:
             msg = f"malformed action {item!r}"
             raise PddlError(msg)
         action = _action(item)
+        if action.name in actions:
+            msg = f"{name}: action {action.name} defined twice"
+            raise PddlError(msg)
         actions[action.name] = action
-    return Domain(name, predicates, actions)
+    try:
+        return Domain(name, predicates, actions)
+    except StripsError as exc:
+        raise PddlError(str(exc)) from exc
 
 
 def read_problem(text: str) -> Problem:
@@ -173,11 +185,17 @@ def read_problem(text: str) -> Problem:
         raise PddlError(msg)
     init = frozenset(_atom(a) for a in sections.get(":init", []))
     goal_expr = sections.get(":goal", [["and"]])
+    if len(goal_expr) != 1:
+        msg = f"{name}: :goal holds {len(goal_expr)} expressions, not one"
+        raise PddlError(msg)
     goal, negated = _literals(goal_expr[0])
     if negated:
         msg = f"{name}: negated goals are outside the supported subset"
         raise PddlError(msg)
-    return Problem(name, objects, init, goal)
+    try:
+        return Problem(name, objects, init, goal)
+    except StripsError as exc:
+        raise PddlError(str(exc)) from exc
 
 
 def load_domain(path: Path) -> Domain:
