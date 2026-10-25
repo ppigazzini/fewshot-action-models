@@ -6,7 +6,7 @@
 uv sync
 ```
 
-Python 3.14, as `.python-version` names. The runtime dependencies are clingo (the second
+Python 3.14 or later, as `requires-python` in `pyproject.toml` says. The runtime dependencies are clingo (the second
 planner), valgebra with annotated-types and typing-extensions (the study file check).
 
 ## Learn a model
