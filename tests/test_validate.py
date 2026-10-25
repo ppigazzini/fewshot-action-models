@@ -15,6 +15,13 @@ class TestValidate:
         verdict = validate(blocks.domain, problem, [("teleport", "b1")])
         assert "no action" in verdict.reason
 
+    def test_it_refuses_a_step_with_the_wrong_number_of_objects(self, blocks, rng):
+        problem = blocks.generate(rng, 3)
+        verdict = validate(blocks.domain, problem, [("stack", "b1")])
+        assert not verdict.valid
+        assert verdict.step == 0
+        assert "stack takes 2 objects, got 1" in verdict.reason
+
     def test_it_refuses_a_repeated_object(self, blocks, rng):
         problem = blocks.generate(rng, 3)
         verdict = validate(blocks.domain, problem, [("stack", "b1", "b1")])
