@@ -7,6 +7,14 @@
 - B. Juba, H. S. Le, R. Stern. Safe learning of lifted action models. KR 2021.
   [arXiv:2107.04169](https://arxiv.org/abs/2107.04169)
 
+## Safe learners beyond STRIPS
+
+- A. Mordoch, B. Juba, R. Stern. Learning safe numeric action models. AAAI 2023.
+- H. S. Le, B. Juba, R. Stern. Learning safe action models with partial observability.
+  AAAI 2024.
+- A. Mordoch, E. Scala, R. Stern, B. Juba. Safe learning of PDDL domains with conditional
+  effects. ICAPS 2024. [arXiv:2403.15251](https://arxiv.org/abs/2403.15251)
+
 ## Related learners
 
 - Q. Yang, K. Wu, Y. Jiang. Learning action models from plan examples using weighted
@@ -17,6 +25,8 @@
   Artificial Intelligence 275, 2019.
 - A. Cropper, R. Morel. Learning programs by learning from failures. Machine Learning 110,
   2021. [Popper](https://github.com/logic-and-learning-lab/Popper)
+- L. Lamanna, L. Serafini. Action model learning from noisy traces: a probabilistic
+  approach. ICAPS 2024.
 
 ## Software
 

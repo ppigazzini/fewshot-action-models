@@ -85,8 +85,10 @@ study file compares exactly across platforms and no rounding rule is part of a r
 - Fully observed, noise-free traces only. An atom missing from one observed pre-state
   removes a true precondition and voids the guarantee. A trace file no STRIPS model
   explains is refused; noise some STRIPS model still explains passes, an atom missing from
-  every state of a trace for one. Partial observability is not handled.
+  every state of a trace for one. Partial observability is not handled; the safe learners
+  of Le, Juba and Stern (2024) handle it.
 - Untyped STRIPS only: no conditional effects, quantifiers, numeric fluents or constants in
-  schemas.
+  schemas. Safe learning with conditional effects (Mordoch, Scala, Stern and Juba 2024)
+  and with numeric fluents (Mordoch, Juba and Stern 2023) holds under further assumptions.
 - BFS bounds the test sizes: blocksworld is tested up to 5 blocks, gripper up to 4 balls,
   logistics up to 3 packages.
