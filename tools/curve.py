@@ -43,6 +43,18 @@ def measure(  # noqa: PLR0913, PLR0917 - the settings a study records
     )
 
 
+def _positive(text: str) -> int:
+    value = int(text)
+    if value < 1:
+        msg = f"{value} is not a positive count"
+        raise argparse.ArgumentTypeError(msg)
+    return value
+
+
+def _counts(text: str) -> list[int]:
+    return sorted({_positive(part) for part in text.split(",")})
+
+
 def _pct(values: list[float]) -> str:
     lo, hi, mean = min(values), max(values), sum(values) / len(values)
     return f"{100 * mean:.1f} ({100 * lo:.0f}-{100 * hi:.0f})"
@@ -68,7 +80,8 @@ def table(study: Study) -> str:
         solved = _pct([r["solved"] / r["problems"] for r in rows])
         solved_rows = [r for r in rows if r["solved"]]
         valid = _pct([r["valid"] / r["solved"] for r in solved_rows]) if solved_rows else "n/a"
-        score = _pct([r["valid"] / r["reference_solved"] for r in rows if r["reference_solved"]])
+        scored = [r["valid"] / r["reference_solved"] for r in rows if r["reference_solved"]]
+        score = _pct(scored) if scored else "n/a"
         lines.append(f"| {n} | {trans:.1f} | {acts:.1f} | {solved} | {valid} | {score} |")
     return "\n".join(lines)
 
@@ -77,10 +90,10 @@ def main(argv: list[str]) -> int:
     """Parse arguments, measure, and print, write or check."""
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("benchmark", choices=sorted(BENCHMARKS))
-    parser.add_argument("--demos", default="1,2,5,10,20,50")
-    parser.add_argument("--seeds", type=int, default=3)
-    parser.add_argument("--test", type=int, default=50, help="test problems per seed")
-    parser.add_argument("--max-nodes", type=int, default=200_000)
+    parser.add_argument("--demos", type=_counts, default="1,2,5,10,20,50")
+    parser.add_argument("--seeds", type=_positive, default=3)
+    parser.add_argument("--test", type=_positive, default=50, help="test problems per seed")
+    parser.add_argument("--max-nodes", type=_positive, default=200_000)
     parser.add_argument("--learner", choices=["sam", "optimistic"], default="sam")
     out = parser.add_mutually_exclusive_group()
     out.add_argument("--json", type=Path, help="write the study file")
@@ -107,9 +120,8 @@ def main(argv: list[str]) -> int:
         print(f"\n{len(diff)} difference(s) against {args.check}")
         return 1 if diff else 0
 
-    demos = sorted({int(d) for d in args.demos.split(",")})
     study = measure(
-        args.benchmark, demos, list(range(args.seeds)), args.test, args.max_nodes, args.learner
+        args.benchmark, args.demos, list(range(args.seeds)), args.test, args.max_nodes, args.learner
     )
     print(table(study))
     if args.json:

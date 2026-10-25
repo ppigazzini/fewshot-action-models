@@ -41,6 +41,23 @@ def test_the_published_blocksworld_study_still_reproduces():
     assert differences(expected, expected | {"rows": rows}) == []
 
 
+class TestTool:
+    TOOL = (sys.executable, str(Path(__file__).parent.parent / "tools" / "curve.py"))
+
+    def test_a_curve_no_reference_plan_scores_prints_without_a_score(self):
+        args = ["blocksworld", "--demos", "1", "--seeds", "1", "--test", "2", "--max-nodes", "1"]
+        out = subprocess.run([*self.TOOL, *args], capture_output=True, text=True, check=True)
+        assert out.stdout.splitlines()[-1] == "| 1 | 0.0 | 0.0 | 0.0 (0-0) | n/a | n/a |"
+
+    @pytest.mark.parametrize("option", ["--test", "--seeds", "--max-nodes", "--demos"])
+    def test_a_count_below_one_is_refused(self, option):
+        out = subprocess.run(
+            [*self.TOOL, "blocksworld", option, "0"], capture_output=True, text=True, check=False
+        )
+        assert out.returncode == 2
+        assert "0 is not a positive count" in out.stderr
+
+
 def test_a_study_does_not_depend_on_the_hash_seed(tmp_path):
 
     root = Path(__file__).parent.parent
