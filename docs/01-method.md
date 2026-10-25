@@ -67,6 +67,10 @@ a test problem the reference model itself solves within the node bound, and the 
 the number of such plans over the number of those problems: 100 % is the reference
 model's own score, and no learned model can exceed it.
 
+The reference solves every test problem in every published study, so the score there is
+the solving ratio of Stern et al. (2025), and solved minus valid over the test problems is
+their false-plan ratio: 0 in every SAM row, as the guarantee requires.
+
 ## The unsafe contrast
 
 `amlearn/learn/optimistic.py` keeps SAM's effects and drops every precondition: the most

@@ -28,6 +28,13 @@
 - L. Lamanna, L. Serafini. Action model learning from noisy traces: a probabilistic
   approach. ICAPS 2024.
 
+## Evaluation
+
+- R. Stern, L. Lamanna, A. Mordoch, Y. Benyamin, P. Lauer, B. Juba, G. Behnke, C. Muise,
+  P. Bercher, M. Vallati, K. Xi, O. Wattad, O. Eliyahu. Evaluating planning model-learning
+  algorithms. ICAPS 2025 Workshop on Knowledge Engineering for Planning and Scheduling.
+  [PDF](https://icaps25.icaps-conference.org/program/workshops/keps-papers/AML-e.pdf)
+
 ## Software
 
 - [clingo](https://github.com/potassco/clingo) 5.8 (MIT): M. Gebser, R. Kaminski,
