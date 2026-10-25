@@ -87,7 +87,7 @@ Each cell is the mean over seeds with the per-seed minimum and maximum in bracke
 
 ```bash
 uv run python tools/curve.py blocksworld --demos 1,2,3,5,10,20,50 --seeds 5 --test 50 \
-    --json docs/studies/blocksworld.json
+    --max-nodes 20000 --json docs/studies/blocksworld.json
 uv run python tools/curve.py blocksworld --check docs/studies/blocksworld.json
 ```
 

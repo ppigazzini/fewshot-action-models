@@ -4,205 +4,392 @@
  "learner": "optimistic",
  "planner": "bfs",
  "max_nodes": 20000,
- "test_problems": 30,
+ "test_problems": 50,
  "rows": [
   {
    "demos": 1,
    "seed": 0,
    "transitions": 2,
    "actions_learned": 2,
-   "problems": 30,
-   "solved": 8,
+   "problems": 50,
+   "solved": 14,
    "valid": 0,
-   "limit": 22,
-   "reference_solved": 30
+   "limit": 36,
+   "reference_solved": 50
   },
   {
    "demos": 2,
    "seed": 0,
    "transitions": 6,
    "actions_learned": 3,
-   "problems": 30,
-   "solved": 8,
+   "problems": 50,
+   "solved": 14,
    "valid": 0,
-   "limit": 22,
-   "reference_solved": 30
+   "limit": 36,
+   "reference_solved": 50
   },
   {
    "demos": 3,
    "seed": 0,
    "transitions": 8,
    "actions_learned": 4,
-   "problems": 30,
-   "solved": 26,
+   "problems": 50,
+   "solved": 42,
    "valid": 0,
-   "limit": 4,
-   "reference_solved": 30
+   "limit": 8,
+   "reference_solved": 50
   },
   {
    "demos": 5,
    "seed": 0,
    "transitions": 20,
    "actions_learned": 4,
-   "problems": 30,
-   "solved": 26,
+   "problems": 50,
+   "solved": 42,
    "valid": 0,
-   "limit": 4,
-   "reference_solved": 30
+   "limit": 8,
+   "reference_solved": 50
   },
   {
    "demos": 10,
    "seed": 0,
    "transitions": 40,
    "actions_learned": 4,
-   "problems": 30,
-   "solved": 26,
+   "problems": 50,
+   "solved": 42,
    "valid": 0,
-   "limit": 4,
-   "reference_solved": 30
+   "limit": 8,
+   "reference_solved": 50
   },
   {
    "demos": 20,
    "seed": 0,
    "transitions": 94,
    "actions_learned": 4,
-   "problems": 30,
-   "solved": 26,
+   "problems": 50,
+   "solved": 42,
    "valid": 0,
-   "limit": 4,
-   "reference_solved": 30
+   "limit": 8,
+   "reference_solved": 50
+  },
+  {
+   "demos": 50,
+   "seed": 0,
+   "transitions": 240,
+   "actions_learned": 4,
+   "problems": 50,
+   "solved": 42,
+   "valid": 0,
+   "limit": 8,
+   "reference_solved": 50
   },
   {
    "demos": 1,
    "seed": 1,
    "transitions": 6,
    "actions_learned": 4,
-   "problems": 30,
-   "solved": 23,
+   "problems": 50,
+   "solved": 36,
    "valid": 0,
-   "limit": 7,
-   "reference_solved": 30
+   "limit": 14,
+   "reference_solved": 50
   },
   {
    "demos": 2,
    "seed": 1,
    "transitions": 12,
    "actions_learned": 4,
-   "problems": 30,
-   "solved": 23,
+   "problems": 50,
+   "solved": 36,
    "valid": 0,
-   "limit": 7,
-   "reference_solved": 30
+   "limit": 14,
+   "reference_solved": 50
   },
   {
    "demos": 3,
    "seed": 1,
    "transitions": 16,
    "actions_learned": 4,
-   "problems": 30,
-   "solved": 23,
+   "problems": 50,
+   "solved": 36,
    "valid": 0,
-   "limit": 7,
-   "reference_solved": 30
+   "limit": 14,
+   "reference_solved": 50
   },
   {
    "demos": 5,
    "seed": 1,
    "transitions": 22,
    "actions_learned": 4,
-   "problems": 30,
-   "solved": 23,
+   "problems": 50,
+   "solved": 36,
    "valid": 0,
-   "limit": 7,
-   "reference_solved": 30
+   "limit": 14,
+   "reference_solved": 50
   },
   {
    "demos": 10,
    "seed": 1,
    "transitions": 50,
    "actions_learned": 4,
-   "problems": 30,
-   "solved": 23,
+   "problems": 50,
+   "solved": 36,
    "valid": 0,
-   "limit": 7,
-   "reference_solved": 30
+   "limit": 14,
+   "reference_solved": 50
   },
   {
    "demos": 20,
    "seed": 1,
    "transitions": 98,
    "actions_learned": 4,
-   "problems": 30,
-   "solved": 23,
+   "problems": 50,
+   "solved": 36,
    "valid": 0,
-   "limit": 7,
-   "reference_solved": 30
+   "limit": 14,
+   "reference_solved": 50
+  },
+  {
+   "demos": 50,
+   "seed": 1,
+   "transitions": 244,
+   "actions_learned": 4,
+   "problems": 50,
+   "solved": 36,
+   "valid": 0,
+   "limit": 14,
+   "reference_solved": 50
   },
   {
    "demos": 1,
    "seed": 2,
    "transitions": 6,
    "actions_learned": 3,
-   "problems": 30,
-   "solved": 25,
+   "problems": 50,
+   "solved": 43,
    "valid": 0,
-   "limit": 5,
-   "reference_solved": 30
+   "limit": 7,
+   "reference_solved": 50
   },
   {
    "demos": 2,
    "seed": 2,
    "transitions": 14,
    "actions_learned": 4,
-   "problems": 30,
-   "solved": 24,
+   "problems": 50,
+   "solved": 40,
    "valid": 0,
-   "limit": 6,
-   "reference_solved": 30
+   "limit": 10,
+   "reference_solved": 50
   },
   {
    "demos": 3,
    "seed": 2,
    "transitions": 18,
    "actions_learned": 4,
-   "problems": 30,
-   "solved": 24,
+   "problems": 50,
+   "solved": 40,
    "valid": 0,
-   "limit": 6,
-   "reference_solved": 30
+   "limit": 10,
+   "reference_solved": 50
   },
   {
    "demos": 5,
    "seed": 2,
    "transitions": 28,
    "actions_learned": 4,
-   "problems": 30,
-   "solved": 24,
+   "problems": 50,
+   "solved": 40,
    "valid": 0,
-   "limit": 6,
-   "reference_solved": 30
+   "limit": 10,
+   "reference_solved": 50
   },
   {
    "demos": 10,
    "seed": 2,
    "transitions": 48,
    "actions_learned": 4,
-   "problems": 30,
-   "solved": 24,
+   "problems": 50,
+   "solved": 40,
    "valid": 0,
-   "limit": 6,
-   "reference_solved": 30
+   "limit": 10,
+   "reference_solved": 50
   },
   {
    "demos": 20,
    "seed": 2,
    "transitions": 90,
    "actions_learned": 4,
-   "problems": 30,
-   "solved": 24,
+   "problems": 50,
+   "solved": 40,
    "valid": 0,
-   "limit": 6,
-   "reference_solved": 30
+   "limit": 10,
+   "reference_solved": 50
+  },
+  {
+   "demos": 50,
+   "seed": 2,
+   "transitions": 216,
+   "actions_learned": 4,
+   "problems": 50,
+   "solved": 40,
+   "valid": 0,
+   "limit": 10,
+   "reference_solved": 50
+  },
+  {
+   "demos": 1,
+   "seed": 3,
+   "transitions": 2,
+   "actions_learned": 2,
+   "problems": 50,
+   "solved": 11,
+   "valid": 0,
+   "limit": 39,
+   "reference_solved": 50
+  },
+  {
+   "demos": 2,
+   "seed": 3,
+   "transitions": 10,
+   "actions_learned": 4,
+   "problems": 50,
+   "solved": 43,
+   "valid": 0,
+   "limit": 7,
+   "reference_solved": 50
+  },
+  {
+   "demos": 3,
+   "seed": 3,
+   "transitions": 12,
+   "actions_learned": 4,
+   "problems": 50,
+   "solved": 43,
+   "valid": 0,
+   "limit": 7,
+   "reference_solved": 50
+  },
+  {
+   "demos": 5,
+   "seed": 3,
+   "transitions": 18,
+   "actions_learned": 4,
+   "problems": 50,
+   "solved": 43,
+   "valid": 0,
+   "limit": 7,
+   "reference_solved": 50
+  },
+  {
+   "demos": 10,
+   "seed": 3,
+   "transitions": 36,
+   "actions_learned": 4,
+   "problems": 50,
+   "solved": 43,
+   "valid": 0,
+   "limit": 7,
+   "reference_solved": 50
+  },
+  {
+   "demos": 20,
+   "seed": 3,
+   "transitions": 78,
+   "actions_learned": 4,
+   "problems": 50,
+   "solved": 43,
+   "valid": 0,
+   "limit": 7,
+   "reference_solved": 50
+  },
+  {
+   "demos": 50,
+   "seed": 3,
+   "transitions": 210,
+   "actions_learned": 4,
+   "problems": 50,
+   "solved": 43,
+   "valid": 0,
+   "limit": 7,
+   "reference_solved": 50
+  },
+  {
+   "demos": 1,
+   "seed": 4,
+   "transitions": 6,
+   "actions_learned": 4,
+   "problems": 50,
+   "solved": 38,
+   "valid": 0,
+   "limit": 12,
+   "reference_solved": 50
+  },
+  {
+   "demos": 2,
+   "seed": 4,
+   "transitions": 10,
+   "actions_learned": 4,
+   "problems": 50,
+   "solved": 38,
+   "valid": 0,
+   "limit": 12,
+   "reference_solved": 50
+  },
+  {
+   "demos": 3,
+   "seed": 4,
+   "transitions": 18,
+   "actions_learned": 4,
+   "problems": 50,
+   "solved": 38,
+   "valid": 0,
+   "limit": 12,
+   "reference_solved": 50
+  },
+  {
+   "demos": 5,
+   "seed": 4,
+   "transitions": 24,
+   "actions_learned": 4,
+   "problems": 50,
+   "solved": 38,
+   "valid": 0,
+   "limit": 12,
+   "reference_solved": 50
+  },
+  {
+   "demos": 10,
+   "seed": 4,
+   "transitions": 44,
+   "actions_learned": 4,
+   "problems": 50,
+   "solved": 38,
+   "valid": 0,
+   "limit": 12,
+   "reference_solved": 50
+  },
+  {
+   "demos": 20,
+   "seed": 4,
+   "transitions": 78,
+   "actions_learned": 4,
+   "problems": 50,
+   "solved": 38,
+   "valid": 0,
+   "limit": 12,
+   "reference_solved": 50
+  },
+  {
+   "demos": 50,
+   "seed": 4,
+   "transitions": 198,
+   "actions_learned": 4,
+   "problems": 50,
+   "solved": 38,
+   "valid": 0,
+   "limit": 12,
+   "reference_solved": 50
   }
  ]
 }

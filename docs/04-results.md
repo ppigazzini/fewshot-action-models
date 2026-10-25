@@ -10,7 +10,8 @@ uv run python tools/curve.py blocksworld --check docs/studies/blocksworld.json
 ```
 
 Training problems of 3–4 blocks, test problems of 4–5 blocks (the largest training size and
-one beyond); 5 seeds, 50 test problems per seed. Mean over seeds, per-seed range in brackets.
+one beyond); 5 seeds, 50 test problems per seed, BFS bound 20,000 nodes, which no search
+reaches: `limit` is 0 in every row. Mean over seeds, per-seed range in brackets.
 
 | demos | transitions | actions | solved % | valid % of solved | score vs reference % |
 |---:|---:|---:|---:|---:|---:|
@@ -60,23 +61,29 @@ seed.
 uv run python tools/curve.py blocksworld --check docs/studies/blocksworld-optimistic.json
 ```
 
-The optimistic baseline on the same benchmark: 3 seeds, 30 test problems per seed, BFS
-bound 20,000 nodes (a model without preconditions makes every action applicable
-everywhere, and an unsolvable problem then fills the bound).
+The optimistic baseline on the seeds, test problems and bound of the blocksworld study
+above, so each row pairs with the row of the same demonstration count there.
 
 | demos | actions | solved % | valid % of solved | score vs reference % |
 |---:|---:|---:|---:|---:|
-| 1 | 3.0 | 62.2 (27-83) | 0.0 (0-0) | 0.0 (0-0) |
-| 2 | 3.7 | 61.1 (27-80) | 0.0 (0-0) | 0.0 (0-0) |
-| 3 | 4.0 | 81.1 (77-87) | 0.0 (0-0) | 0.0 (0-0) |
-| 5 | 4.0 | 81.1 (77-87) | 0.0 (0-0) | 0.0 (0-0) |
-| 10 | 4.0 | 81.1 (77-87) | 0.0 (0-0) | 0.0 (0-0) |
-| 20 | 4.0 | 81.1 (77-87) | 0.0 (0-0) | 0.0 (0-0) |
+| 1 | 3.0 | 56.8 (22-86) | 0.0 (0-0) | 0.0 (0-0) |
+| 2 | 3.8 | 68.4 (28-86) | 0.0 (0-0) | 0.0 (0-0) |
+| 3 | 4.0 | 79.6 (72-86) | 0.0 (0-0) | 0.0 (0-0) |
+| 5 | 4.0 | 79.6 (72-86) | 0.0 (0-0) | 0.0 (0-0) |
+| 10 | 4.0 | 79.6 (72-86) | 0.0 (0-0) | 0.0 (0-0) |
+| 20 | 4.0 | 79.6 (72-86) | 0.0 (0-0) | 0.0 (0-0) |
+| 50 | 4.0 | 79.6 (72-86) | 0.0 (0-0) | 0.0 (0-0) |
 
-Every plan it finds breaks under the reference: without preconditions it stacks a block
-it is not holding. The planner finds a plan for more problems than SAM does at one or
-two demonstrations, and the plans are worthless; SAM's 28 % at one demonstration are all
-valid.
+Every plan it finds breaks under the reference. Without preconditions every goal atom is
+one step from any state: put-down adds `ontable` and stack adds `on`, for a block the hand
+does not hold as well as for one it does. It finds a plan for more problems than SAM only
+at one demonstration, 56.8 % against 28.0 %, and those plans are worthless; SAM's 28.0 %
+are all valid. From two demonstrations on SAM solves more: 74.4 % against 68.4 % at two,
+80.4 % against 79.6 % at three.
+
+Every problem it leaves unsolved is a bound hit, not a proof: `solved` plus `limit` is 50
+in every row. With every action applicable in every state, the search fills 20,000 nodes
+on 51 of the 250 test problems from 3 demonstrations on, problems SAM solves from 10.
 
 ## Gripper
 

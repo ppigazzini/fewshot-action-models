@@ -48,17 +48,18 @@ uv run python tools/check_markdown.py
 
 ## Results
 
-Blocksworld, training on 3–4 blocks, testing on 4–5 (`docs/04-results.md`):
+Blocksworld, training on 3–4 blocks, testing on 4–5; both learners on the same 5 seeds of
+50 test problems, BFS bound 20,000 nodes (`docs/04-results.md`):
 
 | demonstrations | SAM: score vs reference | SAM: valid of solved | optimistic: solved | optimistic: valid of solved |
 |---:|---:|---:|---:|---:|
-| 1 | 28.0 % | 100 % | 62.2 % | 0 % |
-| 3 | 80.4 % | 100 % | 81.1 % | 0 % |
-| 10 | 100 % | 100 % | 81.1 % | 0 % |
+| 1 | 28.0 % | 100 % | 56.8 % | 0 % |
+| 3 | 80.4 % | 100 % | 79.6 % | 0 % |
+| 10 | 100 % | 100 % | 79.6 % | 0 % |
 
-SAM over 5 seeds of 50 test problems, the optimistic baseline over 3 seeds of 30. The
-optimistic model, which keeps the observed effects and drops every precondition, finds a
-plan for 81 % of the test problems and not one of them executes under the reference.
+The optimistic model, which keeps the observed effects and drops every precondition, finds
+a plan for 79.6 % of the test problems from 3 demonstrations and not one of them executes
+under the reference.
 On Logistics (six actions, 1–2 packages in training, 2–3 in test) SAM scores 45.2 % at
 one demonstration and 100 % from two, every plan valid.
 

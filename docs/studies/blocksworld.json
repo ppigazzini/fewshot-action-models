@@ -3,7 +3,7 @@
  "benchmark": "blocksworld",
  "learner": "sam",
  "planner": "bfs",
- "max_nodes": 200000,
+ "max_nodes": 20000,
  "test_problems": 50,
  "rows": [
   {
