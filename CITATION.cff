@@ -8,6 +8,14 @@ authors:
     orcid: "https://orcid.org/0009-0004-6977-7317"
 license: Apache-2.0
 version: 0.0.1
+abstract: >-
+  Learns the preconditions and effects of planning actions, a lifted STRIPS model with
+  negative preconditions, from a few fully observed demonstrations by safe action-model
+  learning (SAM); plans with the learned model by breadth-first search, cross-checked by an
+  answer-set planner; and scores every plan against an independent reference model. A plan
+  valid under the learned model is valid under the true one. The learning curve measures
+  what that guarantee costs in solved problems on Blocksworld, Gripper and Logistics, and
+  every published count is reproduced by a committed command.
 repository-code: "https://github.com/ppigazzini/fewshot-action-models"
 keywords:
   - action model learning
