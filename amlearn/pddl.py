@@ -134,7 +134,11 @@ def _action(item: list[SExpr]) -> Action:
         msg = f"{name}: a field without a value in {rest!r}"
         raise PddlError(msg)
     for key, value in zip(rest[::2], rest[1::2], strict=True):
-        fields[_symbol(key)] = value
+        field = _symbol(key)
+        if field in fields:
+            msg = f"{name}: {field} given twice"
+            raise PddlError(msg)
+        fields[field] = value
     unknown = set(fields) - {":parameters", ":precondition", ":effect"}
     if unknown:
         msg = f"{name}: unsupported action fields {sorted(unknown)}"
@@ -144,6 +148,10 @@ def _action(item: list[SExpr]) -> Action:
         msg = f"{name}: typed or malformed parameters; the subset is untyped"
         raise PddlError(msg)
     params = tuple(_symbol(p) for p in raw_params)
+    plain = [p for p in params if not p.startswith("?")]
+    if plain:
+        msg = f"{name}: parameters {plain} are not variables"
+        raise PddlError(msg)
     pre_pos, pre_neg = _literals(_drop_distinct(name, params, fields.get(":precondition", ["and"])))
     add, delete = _literals(fields.get(":effect", ["and"]))
     try:
@@ -179,6 +187,9 @@ def read_domain(text: str) -> Domain:
         atom = _atom(decl)
         if "-" in atom:
             msg = f"typed predicate {atom!r}; the subset is untyped"
+            raise PddlError(msg)
+        if atom[0] in predicates:
+            msg = f"{name}: predicate {atom[0]} declared twice"
             raise PddlError(msg)
         predicates[atom[0]] = len(atom) - 1
     if ":types" in sections or ":constants" in sections:

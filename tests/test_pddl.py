@@ -75,6 +75,12 @@ class TestMalformedText:
         [
             (DOMAIN.format("(:action a :parameters (?x) :effect)"), "without a value"),
             (DOMAIN.format("(:action)"), "without a name"),
+            ("(define (domain d) (:predicates (p ?x) (p ?x ?y)))", "predicate p declared twice"),
+            (
+                DOMAIN.format("(:action a :parameters (?x) :effect (p ?x) :effect (and))"),
+                ":effect given twice",
+            ),
+            (DOMAIN.format("(:action a :parameters (x))"), r"parameters \['x'\] are not"),
             (DOMAIN.format("(:constants c)"), ":types and :constants are outside"),
             ("(define (domain d) (:predicates (p ?x - block)))", "typed predicate"),
             (DOMAIN.format("(:predicates (q ?x))"), ":predicates appears twice"),
