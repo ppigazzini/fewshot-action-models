@@ -22,6 +22,17 @@ class TestValidate:
         assert verdict.step == 0
         assert "stack takes 2 objects, got 1" in verdict.reason
 
+    def test_it_names_a_negative_precondition_that_holds(self, guarded):
+        domain, problem = guarded
+        verdict = validate(domain, problem, [("make", "o")])
+        assert not verdict.valid
+        assert verdict.reason == "make(o): blocked(o) true"
+
+    def test_it_refuses_an_object_the_problem_does_not_name(self, blocks, rng):
+        problem = blocks.generate(rng, 3)
+        verdict = validate(blocks.domain, problem, [("pick-up", "zz")])
+        assert verdict.reason == "pick-up(zz): unknown ['zz']"
+
     def test_it_refuses_a_repeated_object(self, blocks, rng):
         problem = blocks.generate(rng, 3)
         verdict = validate(blocks.domain, problem, [("stack", "b1", "b1")])

@@ -75,6 +75,8 @@ class TestMalformedText:
         [
             (DOMAIN.format("(:action a :parameters (?x) :effect)"), "without a value"),
             (DOMAIN.format("(:action)"), "without a name"),
+            (DOMAIN.format("(:constants c)"), ":types and :constants are outside"),
+            ("(define (domain d) (:predicates (p ?x - block)))", "typed predicate"),
             (DOMAIN.format("(:predicates (q ?x))"), ":predicates appears twice"),
             (
                 DOMAIN.format("(:action a :parameters (?x)) (:action a :parameters (?x))"),
@@ -111,6 +113,7 @@ class TestMalformedText:
             (PROBLEM.format("o", "(:goal)"), "holds 0 expressions"),
             (PROBLEM.format("o", "(:goal (p o) (q o))"), "holds 2 expressions"),
             (PROBLEM.format("o o", "(:goal (p o))"), "more than once"),
+            (PROBLEM.format("o", "(:goal (not (p o)))"), "negated goals are outside"),
         ],
     )
     def test_a_malformed_problem_is_a_pddl_error_naming_the_fault(self, text, expected):

@@ -55,8 +55,10 @@ class TestDomain:
         problem = Problem("p", ("o1", "o2"), frozenset({("kind", "o1")}), frozenset())
         assert [g.label for g in d.relevant(problem)] == [("a", "o1")]
 
-    def test_relevant_keeps_the_order_of_grounded(self, bench, rng):
-        problem = bench.generate(rng, bench.test_sizes[0])
+    def test_relevant_keeps_the_order_of_grounded_whatever_the_order_of_objects(self, bench, rng):
+        drawn = bench.generate(rng, bench.test_sizes[0])
+        reverse = tuple(reversed(drawn.objects))
+        problem = Problem(drawn.name, reverse, drawn.init, drawn.goal)
         kept = [g.label for g in bench.domain.relevant(problem)]
         everything = [g.label for g in bench.domain.grounded(problem.objects)]
         assert kept == [label for label in everything if label in set(kept)]

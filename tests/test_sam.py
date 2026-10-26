@@ -6,7 +6,7 @@ from amlearn.domains import draw
 from amlearn.learn import Signature, optimistic
 from amlearn.learn.sam import learn, unexplained
 from amlearn.plan.bfs import bfs
-from amlearn.strips import Transition
+from amlearn.strips import Action, Domain, Problem, Transition
 from amlearn.traces import demonstrate, execute, random_walk
 from amlearn.validate import validate
 
@@ -135,6 +135,67 @@ class TestReplay:
         assert unexplained(model, kept) == [
             "handempty still holds after pick-up(b), but another pick-up step deletes handempty"
         ]
+
+
+class TestNegativePreconditions:
+    """A true delete effect never seen as a change is what the negative preconditions guard.
+
+    The demonstration cleans an object that is not dirty, so ``not dirty(?x)`` holds in
+    every observed pre-state of clean and stays in the learned precondition. Without it, a
+    learned model cleans first and inspects after, and the reference refuses the plan: clean
+    deletes the dirt inspect needs.
+    """
+
+    CHORES = Domain(
+        "chores",
+        {"dirty": 1, "washed": 1, "done": 1},
+        {
+            "clean": Action(
+                "clean",
+                ("?x",),
+                add=frozenset({("washed", "?x")}),
+                delete=frozenset({("dirty", "?x")}),
+            ),
+            "inspect": Action(
+                "inspect",
+                ("?x",),
+                pre_pos=frozenset({("dirty", "?x")}),
+                add=frozenset({("done", "?x")}),
+            ),
+        },
+    )
+    DEMOS = (
+        (Transition(frozenset(), ("clean", "a"), frozenset({("washed", "a")})),),
+        (
+            Transition(
+                frozenset({("dirty", "c")}),
+                ("inspect", "c"),
+                frozenset({("dirty", "c"), ("done", "c")}),
+            ),
+        ),
+    )
+    PROBLEM = Problem(
+        "p", ("b",), frozenset({("dirty", "b")}), frozenset({("washed", "b"), ("done", "b")})
+    )
+
+    def test_a_learned_model_without_them_plans_what_the_reference_refuses(self):
+        model = learn(Signature.of(self.CHORES), self.DEMOS)
+        stripped = Domain(
+            model.name,
+            model.predicates,
+            {
+                n: Action(n, a.params, a.pre_pos, frozenset(), a.add, a.delete)
+                for n, a in model.actions.items()
+            },
+        )
+        plan = bfs(stripped, self.PROBLEM).plan
+        assert plan == (("clean", "b"), ("inspect", "b"))
+        assert not validate(self.CHORES, self.PROBLEM, plan).valid
+
+    def test_the_learned_model_keeps_them_and_plans_nothing_invalid(self):
+        model = learn(Signature.of(self.CHORES), self.DEMOS)
+        assert ("dirty", "?x") in model.actions["clean"].pre_neg
+        assert bfs(model, self.PROBLEM).status == "unsolvable"
 
 
 def test_the_optimistic_model_finds_plans_the_reference_refuses(blocks):

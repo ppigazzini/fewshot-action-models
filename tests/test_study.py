@@ -81,12 +81,32 @@ class TestRowRules:
         with pytest.raises(StudyError, match="limit hits"):
             dumps(_study(_row(limit=3)))
 
+    def test_more_reference_solved_than_problems_is_refused(self):
+        with pytest.raises(StudyError, match="reference_solved exceeds problems"):
+            dumps(_study(_row(reference_solved=11)))
 
-def test_differences_name_the_row_and_the_count():
-    assert differences(_study(), _study(_row(solved=9, valid=9))) == [
-        "rows[0].solved: 8 != 9",
-        "rows[0].valid: 8 != 9",
-    ]
+    def test_a_row_rule_is_enforced_when_a_study_is_read(self):
+        payload = json.loads(dumps(_study()))
+        payload["rows"][0]["valid"] = 9
+        with pytest.raises(StudyError, match="valid <= solved"):
+            loads(json.dumps(payload))
+
+
+class TestDifferences:
+    def test_they_name_the_row_and_the_count(self):
+        assert differences(_study(), _study(_row(solved=9, valid=9))) == [
+            "rows[0].solved: 8 != 9",
+            "rows[0].valid: 8 != 9",
+        ]
+
+    def test_they_reach_every_row(self):
+        expected = _study(_row(), _row(seed=1))
+        assert differences(expected, _study(_row(), _row(seed=1, limit=1))) == [
+            "rows[1].limit: 0 != 1"
+        ]
+
+    def test_they_name_a_setting(self):
+        assert differences(_study(), _study() | {"max_nodes": 999}) == ["max_nodes: 1000 != 999"]
 
 
 def test_more_valid_plans_than_the_reference_solves_is_refused():

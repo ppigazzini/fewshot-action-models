@@ -12,7 +12,9 @@ def bfs(domain: Domain, problem: Problem, *, max_nodes: int = 200_000) -> Outcom
     Successors are generated in the fixed order of `Domain.relevant`, so the plan returned
     among equally short ones is a function of the inputs alone.
 
-    ``max_nodes`` bounds the states generated, not expanded: memory is what runs out first.
+    ``max_nodes`` bounds the states stored, not expanded: memory is what runs out first. The
+    search returns ``limit`` when it stores the ``max_nodes``-th state and that state is not
+    a goal, so ``unsolvable`` proves a problem with fewer than ``max_nodes`` reachable states.
     """
     actions = domain.relevant(problem)
     start = problem.init
