@@ -32,16 +32,21 @@ uv run --no-sync python tools/curve.py logistics --check docs/studies/logistics.
 uv run --no-sync python tools/curve.py blocksworld --check docs/studies/blocksworld-walks.json
 uv run --no-sync python tools/curve.py logistics --check docs/studies/logistics-walks.json
 uv run --no-sync python tools/curve.py logistics-local --check docs/studies/logistics-local.json
+uv run --no-sync python tools/curve.py blocksworld --check docs/studies/blocksworld-masked-pisam.json
+uv run --no-sync python tools/curve.py logistics --check docs/studies/logistics-masked-pisam.json
 ```
 
-All of them must be clean before a commit. The studies at large test sizes take about 13
-minutes and run weekly in CI (`.github/workflows/large.yml`); a change to the learner, the
-planners, the generators or the metrics reruns them before its commit:
+All of them must be clean before a commit. The studies at large test sizes, and those of
+an observer that leaves SAM unsafe, take minutes each and run weekly in CI
+(`.github/workflows/large.yml`); a change to the learner, the planners, the generators or
+the metrics reruns them before its commit:
 
 ```bash
 uv run --no-sync python tools/curve.py blocksworld --check docs/studies/blocksworld-large.json
 uv run --no-sync python tools/curve.py gripper --check docs/studies/gripper-large.json
 uv run --no-sync python tools/curve.py logistics --check docs/studies/logistics-large.json
+uv run --no-sync python tools/curve.py blocksworld --check docs/studies/blocksworld-masked-sam.json
+uv run --no-sync python tools/curve.py blocksworld --check docs/studies/blocksworld-noise.json
 ```
  A change that moves a published
 count regenerates the study with `--json` in the same commit and says why the

@@ -65,7 +65,9 @@ test, 10 seeds) SAM's plans are valid on 319 of 500 test problems at one demonst
 to 100 % by seed) and on all 500 from two, every plan valid. On the states of reference
 random walks from the test problems, 550 per seed, no SAM model of any study applies an
 action the reference refuses or mispredicts an atom an action changes
-(`docs/01-method.md`, Scoring).
+(`docs/01-method.md`, Scoring). With 30 % of the atoms hidden, PI-SAM keeps every plan
+valid and solves all 500 blocksworld test problems from 50 demonstrations, where SAM
+reading a hidden atom as false finds plans for 444 and 40 of them are valid.
 
 See [`docs/`](docs/README.md) for the method, the results and the development rules.
 

@@ -1,7 +1,8 @@
-name: large studies
+name: slow studies
 
-# The studies over test sizes beyond the per-commit ones take about 13 minutes, logistics at
-# 4 and 5 packages most of it, so they run weekly and on demand instead of on every push.
+# The studies over large test sizes, and those whose models a noisy or misread observer
+# leaves without preconditions, search to their bounds for minutes, so they run weekly and on
+# demand instead of on every push.
 on:
   schedule:
     - cron: "17 4 * * 1"
@@ -9,7 +10,7 @@ on:
 
 jobs:
   large:
-    name: published studies at large test sizes
+    name: published studies that take minutes
     runs-on: ubuntu-26.04
     timeout-minutes: 60
     steps:
@@ -20,3 +21,5 @@ jobs:
       - run: uv run python tools/curve.py blocksworld --check docs/studies/blocksworld-large.json
       - run: uv run python tools/curve.py gripper --check docs/studies/gripper-large.json
       - run: uv run python tools/curve.py logistics --check docs/studies/logistics-large.json
+      - run: uv run python tools/curve.py blocksworld --check docs/studies/blocksworld-masked-sam.json
+      - run: uv run python tools/curve.py blocksworld --check docs/studies/blocksworld-noise.json

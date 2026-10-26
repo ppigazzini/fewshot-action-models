@@ -116,11 +116,13 @@ solves from 10 (`docs/04-results.md`). Its plans are judged by the same validato
 
 ## Limits
 
-- Fully observed, noise-free traces only. An atom missing from one observed pre-state
-  removes a true precondition and voids the guarantee. A trace file no STRIPS model
-  explains is refused; noise some STRIPS model still explains passes, an atom missing from
-  every state of a trace for one. Partial observability is not handled; the safe learners
-  of Le, Juba and Stern (2024) handle it.
+- Noise voids the guarantee: an atom missing from one observed pre-state removes a true
+  precondition. A trace file no STRIPS model explains is refused, which with 5 % of the
+  atoms missed is the file of every row measured (`docs/04-results.md`); noise some STRIPS
+  model still explains passes, an atom missing from every state of a trace for one.
+  Partial observability keeps the guarantee with PI-SAM (Le, Juba and Stern 2024),
+  `sam.learn_observed`, for atoms hidden at random; a trace file has no form for a hidden
+  atom.
 - Untyped STRIPS only: no conditional effects, quantifiers, numeric fluents or constants in
   schemas. Safe learning with conditional effects (Mordoch, Scala, Stern and Juba 2024)
   and with numeric fluents (Mordoch, Juba and Stern 2023) holds under further assumptions.

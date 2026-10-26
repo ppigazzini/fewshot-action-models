@@ -202,6 +202,44 @@ initial state, so every plan moves a ball across rooms and uses all three action
 demonstration observes each of them. Gripper therefore checks the guarantee and the
 planners; it does not produce a curve.
 
+## What an observer hides or misses
+
+```bash
+uv run python tools/curve.py blocksworld --check docs/studies/blocksworld-masked-pisam.json
+uv run python tools/curve.py blocksworld --check docs/studies/blocksworld-masked-sam.json
+uv run python tools/curve.py blocksworld --check docs/studies/blocksworld-noise.json
+uv run python tools/curve.py logistics --check docs/studies/logistics-masked-pisam.json
+```
+
+The blocksworld study with an observer between the demonstrations and the learner
+(`observe` in `amlearn/traces.py`): one that hides each atom of each state with probability
+0.3, the higher rate of the experiments of Le, Juba and Stern (2024), and one that misses
+each true atom with probability 0.05. Both masked studies see the same masks. Valid plans
+over 500 test problems, and plans found:
+
+| demos | fully observed | 30 % hidden, PI-SAM | 30 % hidden, SAM | 5 % missed, SAM |
+|---:|---:|---:|---:|---:|
+| 1 | 211 | 0 | 35 of 96 | 80 of 95 |
+| 2 | 340 | 28 | 63 of 255 | 178 of 239 |
+| 3 | 384 | 82 | 54 of 364 | 144 of 271 |
+| 5 | 451 | 208 | 57 of 423 | 127 of 360 |
+| 10 | 500 | 426 | 40 of 437 | 58 of 380 |
+| 20 | 500 | 475 | 40 of 444 | 46 of 413 |
+| 50 | 500 | 500 | 40 of 444 | 37 of 442 |
+
+PI-SAM keeps the guarantee: every plan is valid, and on no test state does it apply an
+action the reference refuses. It needs more demonstrations, because a literal is learned
+from only where it is seen both before and after a step, which at 30 % masking is 0.7 × 0.7
+= 49 % of the time; on logistics it solves all 500 test problems from 20 demonstrations,
+and none from two. SAM reading a hidden atom as false has no guarantee left: from 10
+demonstrations it finds plans for 437 test problems and 40 of them are valid. A missed atom
+does the same, and more demonstrations make it worse, since each prunes another true
+precondition: valid plans fall from 178 at two demonstrations to 37 at fifty.
+
+The STRIPS check refuses those trace files: `unexplained` is above 0 in every row of the
+two unsafe studies, and 0 in every PI-SAM row, as the check's theorem requires of steps
+masked without noise.
+
 ## Larger test problems
 
 ```bash
@@ -236,7 +274,8 @@ These three studies take about 13 minutes and are checked weekly
 
 - The optimistic baseline on Logistics. Without preconditions nothing narrows the 11,880
   bindings of `drive-truck` over a dozen objects, and every search state tries them all.
-- Noisy or partially observed traces.
+- A trace file with hidden atoms: the format records full observations, so PI-SAM learns
+  from the observer of a study and not from a file.
 - Negative demonstrations, failed actions. They alone narrow the upper boundary of a
   precondition's version space (Aineto and Scala 2024), so with demonstrations only, no
   learner between SAM and the optimistic model has evidence to choose a precondition.
