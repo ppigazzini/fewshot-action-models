@@ -60,6 +60,20 @@ class TestAnswerSet:
         problem = Problem("x", ("o",), frozenset(), frozenset({("p", "o")}))
         assert asp(d, problem).plan == bfs(d, problem).plan == (("flip", "o"),)
 
+    def test_names_with_commas_stay_apart(self):
+        # Rendered as text, mk(a,b,c) would be both mk("a,b","c") and mk("a","b,c").
+        mk = Action(
+            "mk",
+            ("?x", "?y"),
+            pre_pos=frozenset({("ok", "?x")}),
+            add=frozenset({("q", "?x", "?y")}),
+        )
+        d = Domain("d", {"ok": 1, "q": 2}, {"mk": mk})
+        objects = ("a", "b,c", "a,b", "c")
+        problem = Problem("x", objects, frozenset({("ok", "a,b")}), frozenset({("q", "a", "b,c")}))
+        assert bfs(d, problem).status == "unsolvable"
+        assert asp(d, problem, max_horizon=3).status == "limit"
+
     def test_a_negative_precondition_holds_a_step_back(self, guarded):
         domain, problem = guarded
         plan = asp(domain, problem).plan

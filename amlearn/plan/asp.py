@@ -5,14 +5,17 @@ step, frame axioms by default negation, delete before add. Ground actions come f
 `Domain.relevant`, the same list breadth-first search expands, so the two planners differ
 in search alone and a disagreement in plan length isolates a defect to one of them.
 
-Atoms and actions enter the program as quoted strings: object names may start with an
-upper-case letter, which clingo would read as a variable.
+Atoms and actions enter the program as integers, numbered as the facts list them, and a
+plan decodes through the list of labels. No name meets clingo's syntax, where an upper-case
+first letter reads as a variable and a comma inside a quoted ``on(a,b)`` would be confused
+with an argument boundary; tuples of quoted names would be as safe and ground a third
+slower on test-size problems.
 """
 
 import clingo
 
 from amlearn.plan import Outcome
-from amlearn.strips import Domain, GroundAction, Problem, render
+from amlearn.strips import Atom, Domain, GroundAction, Problem
 
 _BASE = """
 holds(F,0) :- init(F).
@@ -33,24 +36,25 @@ _CHECK = """
 """
 
 
-def _q(text: str) -> str:
-    return '"' + text.replace("\\", "\\\\").replace('"', '\\"') + '"'
-
-
-def _facts(domain: Domain, problem: Problem) -> tuple[str, dict[str, GroundAction]]:
+def _facts(domain: Domain, problem: Problem) -> tuple[str, list[GroundAction]]:
+    """Return the facts, and the labels by the number each action has in them."""
     lines: list[str] = []
-    labels: dict[str, GroundAction] = {}
+    atoms: dict[Atom, int] = {}
+    labels: list[GroundAction] = []
+
+    def n(atom: Atom) -> int:
+        return atoms.setdefault(atom, len(atoms))
+
     for act in domain.relevant(problem):
-        name = render(act.label)
-        labels[name] = act.label
-        a = _q(name)
+        a = len(labels)
+        labels.append(act.label)
         lines.append(f"action({a}).")
-        lines += [f"pre({a},{_q(render(f))})." for f in sorted(act.pre_pos)]
-        lines += [f"neg({a},{_q(render(f))})." for f in sorted(act.pre_neg)]
-        lines += [f"add({a},{_q(render(f))})." for f in sorted(act.add)]
-        lines += [f"del({a},{_q(render(f))})." for f in sorted(act.delete)]
-    lines += [f"init({_q(render(f))})." for f in sorted(problem.init)]
-    lines += [f"goal({_q(render(f))})." for f in sorted(problem.goal)]
+        lines += [f"pre({a},{n(f)})." for f in sorted(act.pre_pos)]
+        lines += [f"neg({a},{n(f)})." for f in sorted(act.pre_neg)]
+        lines += [f"add({a},{n(f)})." for f in sorted(act.add)]
+        lines += [f"del({a},{n(f)})." for f in sorted(act.delete)]
+    lines += [f"init({n(f)})." for f in sorted(problem.init)]
+    lines += [f"goal({n(f)})." for f in sorted(problem.goal)]
     return "\n".join(lines), labels
 
 
@@ -77,8 +81,8 @@ def asp(domain: Domain, problem: Problem, *, max_horizon: int = 30) -> Outcome:
             for model in handle:
                 for sym in model.symbols(atoms=True):
                     if sym.name == "occ":
-                        name, step = sym.arguments
-                        found.append((step.number, labels[name.string]))
+                        action, step = sym.arguments
+                        found.append((step.number, labels[action.number]))
                 break
         if found or (t == 0 and problem.satisfied(problem.init)):
             return Outcome("solved", tuple(label for _, label in sorted(found)), t)
