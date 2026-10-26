@@ -14,6 +14,7 @@ Inline code spans are stripped before matching: a page that documents these
 rules quotes the broken forms deliberately.
 """
 
+import functools
 import re
 import subprocess
 import sys
@@ -32,7 +33,9 @@ RULES: tuple[tuple[str, str], ...] = (
 )
 
 FENCE = re.compile(r"^\s*(```|~~~)")
-LINK = re.compile(r"\[[^\]]*\]\(([^)#\s]+)(?:#[^)\s]*)?\)")
+LINK = re.compile(r"\[[^\]]*\]\(([^)\s]*)\)")
+HEADING = re.compile(r"^#{1,6}\s+(.*?)\s*#*\s*$")
+EXTERNAL = ("http://", "https://", "mailto:")
 
 
 def strip_code_spans(line: str) -> str:
@@ -72,6 +75,46 @@ def strip_code_spans(line: str) -> str:
     return "".join(out)
 
 
+def slug(heading: str) -> str:
+    """Return the anchor GitHub gives ``heading``.
+
+    Link and code text is kept, punctuation dropped, the rest lower-cased with spaces as
+    hyphens.
+    """
+    text = re.sub(r"\[([^\]]*)\]\([^)]*\)", r"\1", heading).replace("`", "").strip().lower()
+    return re.sub(r"[^\w\- ]", "", text).replace(" ", "-")
+
+
+@functools.cache
+def anchors(path: Path) -> set[str]:
+    """Return every heading anchor of ``path``, a repeated heading numbered as GitHub does."""
+    seen: dict[str, int] = {}
+    out: set[str] = set()
+    in_fence = False
+    for raw in path.read_text(encoding="utf-8").splitlines():
+        if FENCE.match(raw):
+            in_fence = not in_fence
+            continue
+        match = None if in_fence else HEADING.match(raw)
+        if match:
+            base = slug(match.group(1))
+            count = seen.get(base, 0)
+            seen[base] = count + 1
+            out.add(base if count == 0 else f"{base}-{count}")
+    return out
+
+
+def dead(path: Path, target: str) -> bool:
+    """Return whether a link from ``path`` to ``target`` reaches no file or no heading."""
+    if target.startswith(EXTERNAL):
+        return False
+    file, _, anchor = target.partition("#")
+    dest = path.parent / file if file else path
+    if not dest.exists():
+        return True
+    return bool(anchor) and dest.suffix == ".md" and anchor not in anchors(dest)
+
+
 def tracked_markdown() -> list[Path]:
     """Return every Markdown file git knows about."""
     out = subprocess.run(
@@ -91,17 +134,15 @@ def check(path: Path) -> list[str]:
         if FENCE.match(raw):
             in_fence = not in_fence
             continue
-
-        problems.extend(
-            f"{path}:{n}: dead link -> {target}"
-            for target in LINK.findall(raw)
-            if not target.startswith(("http://", "https://", "mailto:"))
-            and not (path.parent / target).exists()
-        )
-
         if in_fence:
             continue
+        # Links are read from the rendered text: inside a code span `[i](j)` is code.
         line = strip_code_spans(raw)
+        problems.extend(
+            f"{path}:{n}: dead link -> {target}"
+            for target in LINK.findall(line)
+            if dead(path, target)
+        )
         if line.count("$") % 2:
             problems.append(f"{path}:{n}: odd number of $ -- the whole line stops rendering")
         for pattern, why in RULES:
@@ -113,7 +154,8 @@ def check(path: Path) -> list[str]:
 def main(argv: list[str]) -> int:
     """Scan the named files, or every tracked .md."""
     paths = [Path(a) for a in argv] or tracked_markdown()
-    problems = [msg for p in paths if p.exists() for msg in check(p)]
+    problems = [f"{p}: no such file" for p in paths if not p.exists()]
+    problems += [msg for p in paths if p.exists() for msg in check(p)]
     for msg in problems:
         print(msg)
     print(f"\n{len(problems)} problem(s) in {len(paths)} file(s)")
