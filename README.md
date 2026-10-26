@@ -49,19 +49,20 @@ uv run python tools/check_markdown.py
 ## Results
 
 Blocksworld, training on 3–4 blocks, testing on 4–5; both learners on the same 5 seeds of
-50 test problems, BFS bound 20,000 nodes (`docs/04-results.md`):
+50 test problems, BFS bound 20,000 nodes (`docs/04-results.md`). Each cell counts plans
+over the 250 test problems, with the per-seed range of the share in brackets:
 
-| demonstrations | SAM: score vs reference | SAM: valid of solved | optimistic: solved | optimistic: valid of solved |
+| demonstrations | SAM: valid plans | SAM: invalid plans | optimistic: plans found | optimistic: valid plans |
 |---:|---:|---:|---:|---:|
-| 1 | 28.0 % | 100 % | 56.8 % | 0 % |
-| 3 | 80.4 % | 100 % | 79.6 % | 0 % |
-| 10 | 100 % | 100 % | 79.6 % | 0 % |
+| 1 | 70 (0–52 %) | 0 | 142 (22–86 %) | 0 |
+| 3 | 201 (50–100 %) | 0 | 199 (72–86 %) | 0 |
+| 10 | 250 (100 %) | 0 | 199 (72–86 %) | 0 |
 
 The optimistic model, which keeps the observed effects and drops every precondition, finds
-a plan for 79.6 % of the test problems from 3 demonstrations and not one of them executes
-under the reference.
-On Logistics (six actions, 1–2 packages in training, 2–3 in test) SAM scores 45.2 % at
-one demonstration and 100 % from two, every plan valid.
+a plan for 199 of the 250 test problems from 3 demonstrations, and not one of them
+executes under the reference. On Logistics (six actions, 1–2 packages in training, 2–3 in
+test) SAM's plans are valid on 113 of 250 test problems at one demonstration (0 to 100 %
+by seed) and on all 250 from two, every plan valid.
 
 See [`docs/`](docs/README.md) for the method, the results and the development rules.
 
