@@ -59,10 +59,15 @@ class StudyError(ValueError):
 
 
 def check_rows(study: Study) -> list[str]:
-    """Return every rule between two fields that a row breaks."""
+    """Return every rule a row breaks between two of its fields, or with another row."""
     problems: list[str] = []
+    first: dict[tuple[int, int], int] = {}
     for i, row in enumerate(study["rows"]):
         at = f"rows[{i}]"
+        point = (row["seed"], row["demos"])
+        if point in first:
+            problems.append(f"{at}: seed {point[0]}, demos {point[1]} repeats rows[{first[point]}]")
+        first.setdefault(point, i)
         if row["problems"] != study["test_problems"]:
             problems.append(f"{at}: problems {row['problems']} != {study['test_problems']}")
         if not row["valid"] <= row["solved"] <= row["problems"]:

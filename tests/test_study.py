@@ -81,6 +81,10 @@ class TestRowRules:
         with pytest.raises(StudyError, match="limit hits"):
             dumps(_study(_row(limit=3)))
 
+    def test_a_point_measured_twice_is_refused(self):
+        with pytest.raises(StudyError, match=r"rows\[1\]: seed 0, demos 5 repeats rows\[0\]"):
+            dumps(_study(_row(), _row()))
+
     def test_more_reference_solved_than_problems_is_refused(self):
         with pytest.raises(StudyError, match="reference_solved exceeds problems"):
             dumps(_study(_row(reference_solved=11)))
