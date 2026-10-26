@@ -45,7 +45,7 @@ plan takes is never observed. Traces recorded elsewhere are read from a trace fi
 A file is refused when no STRIPS model without constants explains every step. The test is
 exact: such a model contains every observed change among its effects, so the model SAM
 learns replays each step whenever one exists, and it is one itself.
-Random walks are the unbiased contrast and are used in the safety tests.
+Random walks are the goal-independent contrast and are used in the safety tests.
 
 ## Planning
 
@@ -78,8 +78,8 @@ permissive model consistent with what the traces show each action does. Without 
 bound it solves every problem SAM solves, since its actions apply wherever SAM's do and have
 the same effects. Under a node bound it can solve fewer: every action applies in every
 state, and the search can exhaust the bound where SAM's finds a plan. On blocksworld it
-does on 51 of 250 test problems from 3 demonstrations on (`docs/04-results.md`). Its plans
-are judged by the same validator.
+hits the bound on 51 of 250 test problems from 3 demonstrations on, all of which SAM
+solves from 10 (`docs/04-results.md`). Its plans are judged by the same validator.
 
 Every number a study records is a count. Ratios are computed where they are printed, so a
 study file compares exactly across platforms and no rounding rule is part of a result.
@@ -94,5 +94,5 @@ study file compares exactly across platforms and no rounding rule is part of a r
 - Untyped STRIPS only: no conditional effects, quantifiers, numeric fluents or constants in
   schemas. Safe learning with conditional effects (Mordoch, Scala, Stern and Juba 2024)
   and with numeric fluents (Mordoch, Juba and Stern 2023) holds under further assumptions.
-- BFS bounds the test sizes: blocksworld is tested up to 5 blocks, gripper up to 4 balls,
-  logistics up to 3 packages.
+- Small instances: blocksworld is tested up to 5 blocks, gripper up to 4 balls, logistics
+  up to 3 packages. A curve over larger test sizes is not measured.

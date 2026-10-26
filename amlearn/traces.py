@@ -3,7 +3,8 @@
 A demonstration is a shortest plan executed under the reference domain, every state
 recorded. That makes a demonstration goal-directed, as a human one is, and so biased: an
 action a shortest plan never takes is never observed, and the learned model omits it.
-`random_walk` is the unbiased contrast.
+`random_walk` is the goal-independent contrast: a uniform choice among the applicable
+actions, biased only toward states near the start and actions with many groundings.
 """
 
 import random
