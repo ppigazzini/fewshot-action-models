@@ -7,6 +7,11 @@
 - B. Juba, H. S. Le, R. Stern. Safe learning of lifted action models. KR 2021.
   [arXiv:2107.04169](https://arxiv.org/abs/2107.04169)
 
+## Version spaces
+
+- D. Aineto, E. Scala. Action model learning with guarantees. KR 2024, 801-811.
+  [doi:10.24963/kr.2024/75](https://doi.org/10.24963/kr.2024/75)
+
 ## Safe learners beyond STRIPS
 
 - A. Mordoch, B. Juba, R. Stern. Learning safe numeric action models. AAAI 2023.
@@ -42,6 +47,9 @@
   Programming 19(1), 2019.
 - [valgebra](https://github.com/ppigazzini/valgebra) (MIT or Apache-2.0): the study file
   and trace file checks.
+- [AMLGym](https://github.com/LamannaLeonardo/AMLGym) 1.0.13 (MIT) and the authors' SAM,
+  [sam_learning](https://github.com/argaman-aloni/sam_learning) (MIT): the cross-check of
+  `tools/crosscheck.py`, installed for that command alone.
 
 ## Domains
 

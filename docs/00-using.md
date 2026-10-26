@@ -108,6 +108,21 @@ uv run python tools/curve.py blocksworld --check docs/studies/blocksworld.json
 A study file holds counts only. `--check` reads the settings it records, reruns the curve
 and exits 1 on any count that differs; CI runs it on every published study.
 
+## Check against other implementations
+
+```bash
+uv run --python 3.14 --with amlgym==1.0.13 python tools/crosscheck.py
+```
+
+Learns each benchmark from 1, 3 and 10 demonstrations with this SAM and with the authors'
+(`sam_learning`, through [AMLGym](https://github.com/LamannaLeonardo/AMLGym)), and scores
+this package's models with AMLGym's syntactic metrics. All 12 models are the authors' up to
+form: they write injective grounding as inequalities, which this package's writer states
+too, and do not enumerate literals that repeat a variable, such as `on(?x,?x)`, which this
+SAM keeps as candidates. The mean precision and recall per action equal AMLGym's. AMLGym
+and torch are installed for the command alone, on a CPython torch has wheels for; CI does
+not run it.
+
 ## Use another domain
 
 A domain in the supported PDDL subset (untyped STRIPS, negative preconditions, no constants
