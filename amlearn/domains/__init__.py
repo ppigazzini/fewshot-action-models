@@ -8,6 +8,7 @@ not depend on set iteration order, or a published number would change with
 ``PYTHONHASHSEED``.
 """
 
+import functools
 import random
 from collections.abc import Callable
 from dataclasses import dataclass
@@ -35,6 +36,8 @@ class Benchmark:
     generate: Generator
     train_sizes: tuple[int, ...]
     test_sizes: tuple[int, ...]
+    #: The generator of test problems, where it differs from the training one.
+    generate_test: Generator | None = None
 
 
 def _towers(rng: random.Random, blocks: list[str]) -> list[list[str]]:
@@ -86,11 +89,13 @@ def gripper_problem(rng: random.Random, n: int) -> Problem:
     return Problem(f"gripper-{n}", objects, frozenset(init), frozenset(goal))
 
 
-def logistics_problem(rng: random.Random, n: int) -> Problem:
+def logistics_problem(rng: random.Random, n: int, *, away: float | None = None) -> Problem:
     """Draw ``n`` packages over two cities, each with an airport and a post office.
 
     One truck per city and one airplane start at random places of their own kind; each
-    package starts and ends at random locations, and at least one must move.
+    package starts and ends at random locations, and at least one must move. With ``away``
+    a package's goal is in the other city with that probability and in its own otherwise,
+    so ``away=0.1`` draws problems that rarely need the airplane.
     """
     cities = ["c1", "c2"]
     airports = {c: f"ap{c[1]}" for c in cities}
@@ -105,9 +110,18 @@ def logistics_problem(rng: random.Random, n: int) -> Problem:
         init |= {("in-city", airports[c], c), ("in-city", offices[c], c)}
         init.add(("at", trucks[c], rng.choice([airports[c], offices[c]])))
     init.add(("at", "a1", rng.choice(sorted(airports.values()))))
-    init |= {("at", p, rng.choice(locations)) for p in packages}
+    start = {p: rng.choice(locations) for p in packages}
+    init |= {("at", p, start[p]) for p in packages}
+    city = {loc: c for c in cities for loc in (airports[c], offices[c])}
+
+    def destination(p: str) -> str:
+        if away is None:
+            return rng.choice(locations)
+        other = rng.random() < away
+        return rng.choice([loc for loc in locations if (city[loc] != city[start[p]]) == other])
+
     while True:
-        goal = {("at", p, rng.choice(locations)) for p in packages}
+        goal = {("at", p, destination(p)) for p in packages}
         if not goal <= init:
             break
     objects = tuple(cities + locations + sorted(trucks.values()) + ["a1"] + packages)
@@ -129,6 +143,16 @@ BENCHMARKS: dict[str, Benchmark] = {
         train_sizes=(1, 2),
         test_sizes=(2, 3),
     ),
+    # Demonstrations that rarely show the airplane, tests that need it on most problems:
+    # a package changes city in 1 training goal in 10 and in 1 test goal in 2.
+    "logistics-local": Benchmark(
+        "logistics-local",
+        load_domain(_HERE / "logistics.pddl"),
+        functools.partial(logistics_problem, away=0.1),
+        train_sizes=(1, 2),
+        test_sizes=(2, 3),
+        generate_test=logistics_problem,
+    ),
     "gripper": Benchmark(
         "gripper",
         load_domain(_HERE / "gripper.pddl"),
@@ -139,6 +163,18 @@ BENCHMARKS: dict[str, Benchmark] = {
 }
 
 
-def draw(bench: Benchmark, rng: random.Random, count: int, sizes: tuple[int, ...]) -> list[Problem]:
-    """Draw ``count`` problems, each size picked uniformly from ``sizes``."""
-    return [bench.generate(rng, rng.choice(sizes)) for _ in range(count)]
+def draw(
+    bench: Benchmark,
+    rng: random.Random,
+    count: int,
+    sizes: tuple[int, ...],
+    *,
+    test: bool = False,
+) -> list[Problem]:
+    """Draw ``count`` problems, each size picked uniformly from ``sizes``.
+
+    ``test`` draws from the benchmark's test generator, which is its training generator
+    unless the benchmark names another.
+    """
+    generate = bench.generate_test if test and bench.generate_test else bench.generate
+    return [generate(rng, rng.choice(sizes)) for _ in range(count)]

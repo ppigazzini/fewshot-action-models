@@ -133,6 +133,33 @@ problems unsolvable. With every action applicable in every state, the search fil
 nodes on 97 of the 500 test problems from 3 demonstrations on, problems SAM solves from
 10.
 
+## An action demonstrations rarely show
+
+```bash
+uv run python tools/curve.py logistics-local --check docs/studies/logistics-local.json
+```
+
+Logistics with training problems whose packages change city with probability 0.1, and test
+problems from the logistics study's generator, where they change city with probability 0.5
+(`logistics-local` in `amlearn/domains/__init__.py`); 10 seeds of 50 test problems, drawn
+by the benchmark's own seeds. Valid plans over 500 test problems, and actions observed on
+average:
+
+| demos | logistics: valid | logistics: actions | local: valid | local: actions |
+|---:|---:|---:|---:|---:|
+| 1 | 319 | 5.4 | 88 | 3.9 |
+| 2 | 500 | 6.0 | 159 | 4.8 |
+| 3 | 500 | 6.0 | 420 | 5.7 |
+| 5 | 500 | 6.0 | 428 | 5.7 |
+| 10 | 500 | 6.0 | 468 | 6.0 |
+| 20 | 500 | 6.0 | 500 | 6.0 |
+
+A demonstration that keeps its packages in their cities does not show the airplane: one
+local demonstration observes all six actions in 3 of 10 seeds, three in 9. A model
+without the airplane's actions solves only the test problems that leave every package in
+its city, and the local curve needs 20 demonstrations to solve every test problem where
+the logistics one needs 2. Every plan is valid.
+
 ## Demonstrations against random walks
 
 ```bash
@@ -179,7 +206,5 @@ planners; it does not produce a curve.
 - The optimistic baseline on Logistics. Without preconditions nothing narrows the 11,880
   bindings of `drive-truck` over a dozen objects, and every search state tries them all.
 - Noisy or partially observed traces.
-- Domains where a shortest plan rarely uses some action, which is where goal-directed
-  demonstrations and random walks should part.
 - A learner between the two extremes. Inductive logic programming (Popper) on the same
   traces is the planned comparison.

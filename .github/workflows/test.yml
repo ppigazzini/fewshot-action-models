@@ -32,3 +32,4 @@ jobs:
       - run: uv run python tools/curve.py logistics --check docs/studies/logistics.json
       - run: uv run python tools/curve.py blocksworld --check docs/studies/blocksworld-walks.json
       - run: uv run python tools/curve.py logistics --check docs/studies/logistics-walks.json
+      - run: uv run python tools/curve.py logistics-local --check docs/studies/logistics-local.json

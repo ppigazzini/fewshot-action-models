@@ -50,7 +50,7 @@ def rows_for_seed(  # noqa: PLR0913 - the measurement's settings, each recorded 
     train_rng = random.Random(f"{bench.name}:train:{seed}")
     test_rng = random.Random(f"{bench.name}:test:{seed}")
     pool = draw(bench, train_rng, max(demos), tuple(train_sizes or bench.train_sizes))
-    tests = draw(bench, test_rng, test_problems, tuple(test_sizes or bench.test_sizes))
+    tests = draw(bench, test_rng, test_problems, tuple(test_sizes or bench.test_sizes), test=True)
     if demonstrator == "walk":
         walk_rng = random.Random(f"{bench.name}:walks:{seed}")
         traces = [random_walk(bench.domain, p, walk_steps, walk_rng) for p in pool]
