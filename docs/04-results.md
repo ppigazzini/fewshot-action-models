@@ -31,6 +31,24 @@ reaches: `limit` is 0 in every row. Mean over seeds, per-seed range in brackets.
   observed pre-state stays in the model.
 - 10 demonstrations (43.6 transitions on average) reach the reference score in all 5 seeds.
 
+Model quality, precision / recall % from counts pooled over the 5 seeds:
+
+| demos | preconditions | effects | applicability | changes |
+|---:|---:|---:|---:|---:|
+| 1 | 28.3 / 75.6 | 100.0 / 75.6 | 100.0 / 62.5 | 100.0 / 100.0 |
+| 2 | 29.9 / 97.8 | 100.0 / 95.6 | 100.0 / 91.3 | 100.0 / 100.0 |
+| 3 | 29.6 / 100.0 | 100.0 / 100.0 | 100.0 / 94.6 | 100.0 / 100.0 |
+| 5 | 29.8 / 100.0 | 100.0 / 100.0 | 100.0 / 96.6 | 100.0 / 100.0 |
+| 10 | 30.0 / 100.0 | 100.0 / 100.0 | 100.0 / 100.0 | 100.0 / 100.0 |
+| 20 | 30.0 / 100.0 | 100.0 / 100.0 | 100.0 / 100.0 | 100.0 / 100.0 |
+| 50 | 30.0 / 100.0 | 100.0 / 100.0 | 100.0 / 100.0 | 100.0 / 100.0 |
+
+Seven in ten precondition literals SAM keeps are not in the reference's, and from 10
+demonstrations none of them refuses an action the reference applies on any of the 2,750
+test states: applicability recall is 100.0 %. Precision of applicability and of changes is
+100.0 % at every point, as the guarantee requires. Below 10 demonstrations the score and
+applicability recall rise together: 28.0 % and 62.5 % at one, 90.0 % and 96.6 % at five.
+
 ## Logistics
 
 ```bash
@@ -67,6 +85,10 @@ unload-truck keeps `airport(?l)`, coincidences of its one demonstration, so its 
 never reach a post office. Two demonstrations observe all six actions in every seed and
 solve every test problem.
 
+From two demonstrations precondition precision is 10.6 % and applicability recall
+100.0 %: nine in ten kept literals are not in the reference's, and none refuses an action
+the reference applies on a test state.
+
 ## What safety buys
 
 ```bash
@@ -85,6 +107,11 @@ above, so each row pairs with the row of the same demonstration count there.
 | 10 | 4.0 | 79.6 (72-86) | 0.0 (0-0) | 0.0 (0-0) |
 | 20 | 4.0 | 79.6 (72-86) | 0.0 (0-0) | 0.0 (0-0) |
 | 50 | 4.0 | 79.6 (72-86) | 0.0 (0-0) | 0.0 (0-0) |
+
+From 3 demonstrations its applicability precision is 6.6 % with recall 100.0 %: of the
+ground actions it applies on a test state, 1 in 15 is applicable under the reference. Its
+changes are those of the reference wherever both apply, precision and recall 100.0 %:
+the effects are SAM's.
 
 Every plan it finds breaks under the reference. Without preconditions every goal atom is
 one step from any state: put-down adds `ontable` and stack adds `on`, for a block the hand

@@ -86,7 +86,14 @@ per demonstration count, each from the first `n` traces of the pool. Columns:
 | valid % of solved | of those plans, the share valid under the reference model |
 | score vs reference % | valid plans over the test problems the reference model solves |
 
-Each cell is the mean over seeds with the per-seed minimum and maximum in brackets.
+Each cell is the mean over seeds with the per-seed minimum and maximum in brackets. A
+second table gives precision and recall, from counts pooled over seeds, for the four
+families of model-quality counts of [`01-method.md`](01-method.md#scoring): preconditions,
+effects, applicability and changes.
+
+`--train-sizes` and `--test-sizes` replace the benchmark's sizes, and `--walk-length` the
+length of the reference walks whose states the predictive counts are taken on; a study
+records all three, and `--check` reruns with them.
 
 ## Publish and check a study
 

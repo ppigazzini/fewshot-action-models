@@ -19,6 +19,10 @@ def _row(**changes: int) -> Row:
         "valid": 8,
         "limit": 0,
         "reference_solved": 10,
+    } | {
+        f"{family}_{kind}": 1
+        for family in ("pre", "eff", "app", "change")
+        for kind in ("tp", "fp", "fn")
     }
     return ROW.ensure(defaults | changes)
 
@@ -31,6 +35,9 @@ def _study(*rows: Row) -> Study:
         planner="bfs",
         max_nodes=1000,
         test_problems=10,
+        train_sizes=[3, 4],
+        test_sizes=[4, 5],
+        walk_length=10,
         rows=list(rows) or [_row()],
     )
 
@@ -60,7 +67,7 @@ class TestShape:
 
     def test_every_failure_is_reported_at_once(self):
         payload = json.loads(dumps(_study()))
-        payload["format"] = 2
+        payload["format"] = 3
         payload["rows"][0]["seed"] = "0"
         with pytest.raises(StudyError) as caught:
             loads(json.dumps(payload))

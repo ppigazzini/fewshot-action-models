@@ -145,18 +145,23 @@ class Domain:
         changed = {a[0] for act in self.actions.values() for a in act.add | act.delete}
         return frozenset(self.predicates) - changed
 
-    def relevant(self, problem: Problem) -> list[GroundedAction]:
+    def relevant(
+        self, problem: Problem, *, static: frozenset[str] | None = None
+    ) -> list[GroundedAction]:
         """Return the groundings whose static preconditions hold in the initial state.
 
         A static atom never changes, so a grounding that fails one is never applicable;
         dropping it changes no search result and keeps `grounded`'s order. Gripper's pick
-        over 5 balls has 504 groundings and 20 survive.
+        over 5 balls has 504 groundings and 20 survive. ``static`` names the predicates whose
+        atoms keep their initial truth wherever the groundings are used; it defaults to the
+        domain's own static predicates, which holds wherever the domain itself acts.
 
         Every planner and walk grounds through here, so the problem is checked against the
         domain here, once.
         """
         self.check_problem(problem)
-        static = self.static_predicates()
+        if static is None:
+            static = self.static_predicates()
         init = problem.init
         objs = sorted(problem.objects)
         out: list[GroundedAction] = []

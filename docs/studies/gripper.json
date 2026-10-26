@@ -1,10 +1,19 @@
 {
- "format": 1,
+ "format": 2,
  "benchmark": "gripper",
  "learner": "sam",
  "planner": "bfs",
  "max_nodes": 200000,
  "test_problems": 30,
+ "train_sizes": [
+  2,
+  3
+ ],
+ "test_sizes": [
+  3,
+  4
+ ],
+ "walk_length": 10,
  "rows": [
   {
    "demos": 1,
@@ -15,7 +24,19 @@
    "solved": 30,
    "valid": 30,
    "limit": 0,
-   "reference_solved": 30
+   "reference_solved": 30,
+   "pre_tp": 14,
+   "pre_fp": 70,
+   "pre_fn": 0,
+   "eff_tp": 8,
+   "eff_fp": 0,
+   "eff_fn": 0,
+   "app_tp": 1217,
+   "app_fp": 0,
+   "app_fn": 0,
+   "change_tp": 3321,
+   "change_fp": 0,
+   "change_fn": 0
   },
   {
    "demos": 2,
@@ -26,7 +47,19 @@
    "solved": 30,
    "valid": 30,
    "limit": 0,
-   "reference_solved": 30
+   "reference_solved": 30,
+   "pre_tp": 14,
+   "pre_fp": 70,
+   "pre_fn": 0,
+   "eff_tp": 8,
+   "eff_fp": 0,
+   "eff_fn": 0,
+   "app_tp": 1217,
+   "app_fp": 0,
+   "app_fn": 0,
+   "change_tp": 3321,
+   "change_fp": 0,
+   "change_fn": 0
   },
   {
    "demos": 3,
@@ -37,7 +70,19 @@
    "solved": 30,
    "valid": 30,
    "limit": 0,
-   "reference_solved": 30
+   "reference_solved": 30,
+   "pre_tp": 14,
+   "pre_fp": 70,
+   "pre_fn": 0,
+   "eff_tp": 8,
+   "eff_fp": 0,
+   "eff_fn": 0,
+   "app_tp": 1217,
+   "app_fp": 0,
+   "app_fn": 0,
+   "change_tp": 3321,
+   "change_fp": 0,
+   "change_fn": 0
   },
   {
    "demos": 5,
@@ -48,7 +93,19 @@
    "solved": 30,
    "valid": 30,
    "limit": 0,
-   "reference_solved": 30
+   "reference_solved": 30,
+   "pre_tp": 14,
+   "pre_fp": 70,
+   "pre_fn": 0,
+   "eff_tp": 8,
+   "eff_fp": 0,
+   "eff_fn": 0,
+   "app_tp": 1217,
+   "app_fp": 0,
+   "app_fn": 0,
+   "change_tp": 3321,
+   "change_fp": 0,
+   "change_fn": 0
   },
   {
    "demos": 1,
@@ -59,7 +116,19 @@
    "solved": 30,
    "valid": 30,
    "limit": 0,
-   "reference_solved": 30
+   "reference_solved": 30,
+   "pre_tp": 14,
+   "pre_fp": 70,
+   "pre_fn": 0,
+   "eff_tp": 8,
+   "eff_fp": 0,
+   "eff_fn": 0,
+   "app_tp": 1241,
+   "app_fp": 0,
+   "app_fn": 0,
+   "change_tp": 3393,
+   "change_fp": 0,
+   "change_fn": 0
   },
   {
    "demos": 2,
@@ -70,7 +139,19 @@
    "solved": 30,
    "valid": 30,
    "limit": 0,
-   "reference_solved": 30
+   "reference_solved": 30,
+   "pre_tp": 14,
+   "pre_fp": 70,
+   "pre_fn": 0,
+   "eff_tp": 8,
+   "eff_fp": 0,
+   "eff_fn": 0,
+   "app_tp": 1241,
+   "app_fp": 0,
+   "app_fn": 0,
+   "change_tp": 3393,
+   "change_fp": 0,
+   "change_fn": 0
   },
   {
    "demos": 3,
@@ -81,7 +162,19 @@
    "solved": 30,
    "valid": 30,
    "limit": 0,
-   "reference_solved": 30
+   "reference_solved": 30,
+   "pre_tp": 14,
+   "pre_fp": 70,
+   "pre_fn": 0,
+   "eff_tp": 8,
+   "eff_fp": 0,
+   "eff_fn": 0,
+   "app_tp": 1241,
+   "app_fp": 0,
+   "app_fn": 0,
+   "change_tp": 3393,
+   "change_fp": 0,
+   "change_fn": 0
   },
   {
    "demos": 5,
@@ -92,7 +185,19 @@
    "solved": 30,
    "valid": 30,
    "limit": 0,
-   "reference_solved": 30
+   "reference_solved": 30,
+   "pre_tp": 14,
+   "pre_fp": 70,
+   "pre_fn": 0,
+   "eff_tp": 8,
+   "eff_fp": 0,
+   "eff_fn": 0,
+   "app_tp": 1241,
+   "app_fp": 0,
+   "app_fn": 0,
+   "change_tp": 3393,
+   "change_fp": 0,
+   "change_fn": 0
   },
   {
    "demos": 1,
@@ -103,7 +208,19 @@
    "solved": 30,
    "valid": 30,
    "limit": 0,
-   "reference_solved": 30
+   "reference_solved": 30,
+   "pre_tp": 14,
+   "pre_fp": 70,
+   "pre_fn": 0,
+   "eff_tp": 8,
+   "eff_fp": 0,
+   "eff_fn": 0,
+   "app_tp": 1232,
+   "app_fp": 0,
+   "app_fn": 0,
+   "change_tp": 3366,
+   "change_fp": 0,
+   "change_fn": 0
   },
   {
    "demos": 2,
@@ -114,7 +231,19 @@
    "solved": 30,
    "valid": 30,
    "limit": 0,
-   "reference_solved": 30
+   "reference_solved": 30,
+   "pre_tp": 14,
+   "pre_fp": 70,
+   "pre_fn": 0,
+   "eff_tp": 8,
+   "eff_fp": 0,
+   "eff_fn": 0,
+   "app_tp": 1232,
+   "app_fp": 0,
+   "app_fn": 0,
+   "change_tp": 3366,
+   "change_fp": 0,
+   "change_fn": 0
   },
   {
    "demos": 3,
@@ -125,7 +254,19 @@
    "solved": 30,
    "valid": 30,
    "limit": 0,
-   "reference_solved": 30
+   "reference_solved": 30,
+   "pre_tp": 14,
+   "pre_fp": 70,
+   "pre_fn": 0,
+   "eff_tp": 8,
+   "eff_fp": 0,
+   "eff_fn": 0,
+   "app_tp": 1232,
+   "app_fp": 0,
+   "app_fn": 0,
+   "change_tp": 3366,
+   "change_fp": 0,
+   "change_fn": 0
   },
   {
    "demos": 5,
@@ -136,7 +277,19 @@
    "solved": 30,
    "valid": 30,
    "limit": 0,
-   "reference_solved": 30
+   "reference_solved": 30,
+   "pre_tp": 14,
+   "pre_fp": 70,
+   "pre_fn": 0,
+   "eff_tp": 8,
+   "eff_fp": 0,
+   "eff_fn": 0,
+   "app_tp": 1232,
+   "app_fp": 0,
+   "app_fn": 0,
+   "change_tp": 3366,
+   "change_fp": 0,
+   "change_fn": 0
   }
  ]
 }

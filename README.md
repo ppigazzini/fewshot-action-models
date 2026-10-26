@@ -62,7 +62,10 @@ The optimistic model, which keeps the observed effects and drops every precondit
 a plan for 199 of the 250 test problems from 3 demonstrations, and not one of them
 executes under the reference. On Logistics (six actions, 1–2 packages in training, 2–3 in
 test) SAM's plans are valid on 113 of 250 test problems at one demonstration (0 to 100 %
-by seed) and on all 250 from two, every plan valid.
+by seed) and on all 250 from two, every plan valid. On the states of reference random
+walks from the test problems, 550 per seed, no learned model of any study applies an action
+the reference refuses or mispredicts an atom an action changes (`docs/01-method.md`,
+Scoring).
 
 See [`docs/`](docs/README.md) for the method, the results and the development rules.
 

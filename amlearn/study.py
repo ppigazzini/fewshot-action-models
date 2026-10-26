@@ -22,11 +22,17 @@ from amlearn._valgebra import NOT_BOOL, ValidationError, Validator
 type Count = Annotated[int, NOT_BOOL, Ge(0)]
 type Positive = Annotated[int, NOT_BOOL, Ge(1)]
 
-FORMAT = 1
+FORMAT = 2
 
 
 class Row(TypedDict, closed=True):
-    """One point of the curve for one seed."""
+    """One point of the curve for one seed.
+
+    The planning counts come first; then the true positives, false positives and false
+    negatives of `amlearn.metrics`: precondition and effect literals against the reference,
+    applicability of ground actions on the test states, and the atoms an action applied in
+    both models changes there.
+    """
 
     demos: Positive
     seed: Count
@@ -37,18 +43,47 @@ class Row(TypedDict, closed=True):
     valid: Count
     limit: Count
     reference_solved: Count
+    pre_tp: Count
+    pre_fp: Count
+    pre_fn: Count
+    eff_tp: Count
+    eff_fp: Count
+    eff_fn: Count
+    app_tp: Count
+    app_fp: Count
+    app_fn: Count
+    change_tp: Count
+    change_fp: Count
+    change_fn: Count
 
 
 class Study(TypedDict, closed=True):
     """A learning curve over seeds, with the settings that produced it."""
 
-    format: Literal[1]
+    format: Literal[2]
     benchmark: str
     learner: Literal["sam", "optimistic"]
     planner: Literal["bfs"]
     max_nodes: Positive
     test_problems: Positive
+    train_sizes: list[Positive]
+    test_sizes: list[Positive]
+    walk_length: Count
     rows: list[Row]
+
+
+#: The settings a study records, each compared by `differences`.
+SETTINGS = (
+    "format",
+    "benchmark",
+    "learner",
+    "planner",
+    "max_nodes",
+    "test_problems",
+    "train_sizes",
+    "test_sizes",
+    "walk_length",
+)
 
 
 STUDY = Validator(Study)
@@ -109,7 +144,7 @@ def differences(expected: Study, actual: Study) -> list[str]:
     """Return one line per setting or count that differs."""
     out = [
         f"{key}: {expected[key]!r} != {actual[key]!r}"
-        for key in ("format", "benchmark", "learner", "planner", "max_nodes", "test_problems")
+        for key in SETTINGS
         if expected[key] != actual[key]
     ]
     if len(expected["rows"]) != len(actual["rows"]):

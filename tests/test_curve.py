@@ -59,7 +59,7 @@ class TestTool:
     def test_a_curve_no_reference_plan_scores_prints_without_a_score(self):
         args = ["blocksworld", "--demos", "1", "--seeds", "1", "--test", "2", "--max-nodes", "1"]
         out = subprocess.run([*self.TOOL, *args], capture_output=True, text=True, check=True)
-        assert out.stdout.splitlines()[-1] == "| 1 | 0.0 | 0.0 | 0.0 (0-0) | n/a | n/a |"
+        assert "| 1 | 0.0 | 0.0 | 0.0 (0-0) | n/a | n/a |" in out.stdout.splitlines()
 
     def test_check_fails_on_a_count_the_code_no_longer_produces(self, tmp_path):
         study = json.loads((ROOT / "docs" / "studies" / "gripper.json").read_text())

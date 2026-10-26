@@ -1,10 +1,19 @@
 {
- "format": 1,
+ "format": 2,
  "benchmark": "logistics",
  "learner": "sam",
  "planner": "bfs",
  "max_nodes": 200000,
  "test_problems": 50,
+ "train_sizes": [
+  1,
+  2
+ ],
+ "test_sizes": [
+  2,
+  3
+ ],
+ "walk_length": 10,
  "rows": [
   {
    "demos": 1,
@@ -15,7 +24,19 @@
    "solved": 3,
    "valid": 3,
    "limit": 0,
-   "reference_solved": 50
+   "reference_solved": 50,
+   "pre_tp": 14,
+   "pre_fp": 121,
+   "pre_fn": 17,
+   "eff_tp": 6,
+   "eff_fp": 0,
+   "eff_fn": 6,
+   "app_tp": 931,
+   "app_fp": 0,
+   "app_fn": 1886,
+   "change_tp": 1862,
+   "change_fp": 0,
+   "change_fn": 0
   },
   {
    "demos": 2,
@@ -26,7 +47,19 @@
    "solved": 50,
    "valid": 50,
    "limit": 0,
-   "reference_solved": 50
+   "reference_solved": 50,
+   "pre_tp": 31,
+   "pre_fp": 262,
+   "pre_fn": 0,
+   "eff_tp": 12,
+   "eff_fp": 0,
+   "eff_fn": 0,
+   "app_tp": 2817,
+   "app_fp": 0,
+   "app_fn": 0,
+   "change_tp": 5634,
+   "change_fp": 0,
+   "change_fn": 0
   },
   {
    "demos": 3,
@@ -37,7 +70,19 @@
    "solved": 50,
    "valid": 50,
    "limit": 0,
-   "reference_solved": 50
+   "reference_solved": 50,
+   "pre_tp": 31,
+   "pre_fp": 262,
+   "pre_fn": 0,
+   "eff_tp": 12,
+   "eff_fp": 0,
+   "eff_fn": 0,
+   "app_tp": 2817,
+   "app_fp": 0,
+   "app_fn": 0,
+   "change_tp": 5634,
+   "change_fp": 0,
+   "change_fn": 0
   },
   {
    "demos": 5,
@@ -48,7 +93,19 @@
    "solved": 50,
    "valid": 50,
    "limit": 0,
-   "reference_solved": 50
+   "reference_solved": 50,
+   "pre_tp": 31,
+   "pre_fp": 262,
+   "pre_fn": 0,
+   "eff_tp": 12,
+   "eff_fp": 0,
+   "eff_fn": 0,
+   "app_tp": 2817,
+   "app_fp": 0,
+   "app_fn": 0,
+   "change_tp": 5634,
+   "change_fp": 0,
+   "change_fn": 0
   },
   {
    "demos": 10,
@@ -59,7 +116,19 @@
    "solved": 50,
    "valid": 50,
    "limit": 0,
-   "reference_solved": 50
+   "reference_solved": 50,
+   "pre_tp": 31,
+   "pre_fp": 262,
+   "pre_fn": 0,
+   "eff_tp": 12,
+   "eff_fp": 0,
+   "eff_fn": 0,
+   "app_tp": 2817,
+   "app_fp": 0,
+   "app_fn": 0,
+   "change_tp": 5634,
+   "change_fp": 0,
+   "change_fn": 0
   },
   {
    "demos": 20,
@@ -70,7 +139,19 @@
    "solved": 50,
    "valid": 50,
    "limit": 0,
-   "reference_solved": 50
+   "reference_solved": 50,
+   "pre_tp": 31,
+   "pre_fp": 262,
+   "pre_fn": 0,
+   "eff_tp": 12,
+   "eff_fp": 0,
+   "eff_fn": 0,
+   "app_tp": 2817,
+   "app_fp": 0,
+   "app_fn": 0,
+   "change_tp": 5634,
+   "change_fp": 0,
+   "change_fn": 0
   },
   {
    "demos": 1,
@@ -81,7 +162,19 @@
    "solved": 0,
    "valid": 0,
    "limit": 0,
-   "reference_solved": 50
+   "reference_solved": 50,
+   "pre_tp": 17,
+   "pre_fp": 145,
+   "pre_fn": 14,
+   "eff_tp": 6,
+   "eff_fp": 0,
+   "eff_fn": 6,
+   "app_tp": 962,
+   "app_fp": 0,
+   "app_fn": 1763,
+   "change_tp": 1924,
+   "change_fp": 0,
+   "change_fn": 0
   },
   {
    "demos": 2,
@@ -92,7 +185,19 @@
    "solved": 50,
    "valid": 50,
    "limit": 0,
-   "reference_solved": 50
+   "reference_solved": 50,
+   "pre_tp": 31,
+   "pre_fp": 262,
+   "pre_fn": 0,
+   "eff_tp": 12,
+   "eff_fp": 0,
+   "eff_fn": 0,
+   "app_tp": 2725,
+   "app_fp": 0,
+   "app_fn": 0,
+   "change_tp": 5450,
+   "change_fp": 0,
+   "change_fn": 0
   },
   {
    "demos": 3,
@@ -103,7 +208,19 @@
    "solved": 50,
    "valid": 50,
    "limit": 0,
-   "reference_solved": 50
+   "reference_solved": 50,
+   "pre_tp": 31,
+   "pre_fp": 262,
+   "pre_fn": 0,
+   "eff_tp": 12,
+   "eff_fp": 0,
+   "eff_fn": 0,
+   "app_tp": 2725,
+   "app_fp": 0,
+   "app_fn": 0,
+   "change_tp": 5450,
+   "change_fp": 0,
+   "change_fn": 0
   },
   {
    "demos": 5,
@@ -114,7 +231,19 @@
    "solved": 50,
    "valid": 50,
    "limit": 0,
-   "reference_solved": 50
+   "reference_solved": 50,
+   "pre_tp": 31,
+   "pre_fp": 262,
+   "pre_fn": 0,
+   "eff_tp": 12,
+   "eff_fp": 0,
+   "eff_fn": 0,
+   "app_tp": 2725,
+   "app_fp": 0,
+   "app_fn": 0,
+   "change_tp": 5450,
+   "change_fp": 0,
+   "change_fn": 0
   },
   {
    "demos": 10,
@@ -125,7 +254,19 @@
    "solved": 50,
    "valid": 50,
    "limit": 0,
-   "reference_solved": 50
+   "reference_solved": 50,
+   "pre_tp": 31,
+   "pre_fp": 262,
+   "pre_fn": 0,
+   "eff_tp": 12,
+   "eff_fp": 0,
+   "eff_fn": 0,
+   "app_tp": 2725,
+   "app_fp": 0,
+   "app_fn": 0,
+   "change_tp": 5450,
+   "change_fp": 0,
+   "change_fn": 0
   },
   {
    "demos": 20,
@@ -136,7 +277,19 @@
    "solved": 50,
    "valid": 50,
    "limit": 0,
-   "reference_solved": 50
+   "reference_solved": 50,
+   "pre_tp": 31,
+   "pre_fp": 262,
+   "pre_fn": 0,
+   "eff_tp": 12,
+   "eff_fp": 0,
+   "eff_fn": 0,
+   "app_tp": 2725,
+   "app_fp": 0,
+   "app_fn": 0,
+   "change_tp": 5450,
+   "change_fp": 0,
+   "change_fn": 0
   },
   {
    "demos": 1,
@@ -147,7 +300,19 @@
    "solved": 50,
    "valid": 50,
    "limit": 0,
-   "reference_solved": 50
+   "reference_solved": 50,
+   "pre_tp": 31,
+   "pre_fp": 262,
+   "pre_fn": 0,
+   "eff_tp": 12,
+   "eff_fp": 0,
+   "eff_fn": 0,
+   "app_tp": 2822,
+   "app_fp": 0,
+   "app_fn": 0,
+   "change_tp": 5644,
+   "change_fp": 0,
+   "change_fn": 0
   },
   {
    "demos": 2,
@@ -158,7 +323,19 @@
    "solved": 50,
    "valid": 50,
    "limit": 0,
-   "reference_solved": 50
+   "reference_solved": 50,
+   "pre_tp": 31,
+   "pre_fp": 262,
+   "pre_fn": 0,
+   "eff_tp": 12,
+   "eff_fp": 0,
+   "eff_fn": 0,
+   "app_tp": 2822,
+   "app_fp": 0,
+   "app_fn": 0,
+   "change_tp": 5644,
+   "change_fp": 0,
+   "change_fn": 0
   },
   {
    "demos": 3,
@@ -169,7 +346,19 @@
    "solved": 50,
    "valid": 50,
    "limit": 0,
-   "reference_solved": 50
+   "reference_solved": 50,
+   "pre_tp": 31,
+   "pre_fp": 262,
+   "pre_fn": 0,
+   "eff_tp": 12,
+   "eff_fp": 0,
+   "eff_fn": 0,
+   "app_tp": 2822,
+   "app_fp": 0,
+   "app_fn": 0,
+   "change_tp": 5644,
+   "change_fp": 0,
+   "change_fn": 0
   },
   {
    "demos": 5,
@@ -180,7 +369,19 @@
    "solved": 50,
    "valid": 50,
    "limit": 0,
-   "reference_solved": 50
+   "reference_solved": 50,
+   "pre_tp": 31,
+   "pre_fp": 262,
+   "pre_fn": 0,
+   "eff_tp": 12,
+   "eff_fp": 0,
+   "eff_fn": 0,
+   "app_tp": 2822,
+   "app_fp": 0,
+   "app_fn": 0,
+   "change_tp": 5644,
+   "change_fp": 0,
+   "change_fn": 0
   },
   {
    "demos": 10,
@@ -191,7 +392,19 @@
    "solved": 50,
    "valid": 50,
    "limit": 0,
-   "reference_solved": 50
+   "reference_solved": 50,
+   "pre_tp": 31,
+   "pre_fp": 262,
+   "pre_fn": 0,
+   "eff_tp": 12,
+   "eff_fp": 0,
+   "eff_fn": 0,
+   "app_tp": 2822,
+   "app_fp": 0,
+   "app_fn": 0,
+   "change_tp": 5644,
+   "change_fp": 0,
+   "change_fn": 0
   },
   {
    "demos": 20,
@@ -202,7 +415,19 @@
    "solved": 50,
    "valid": 50,
    "limit": 0,
-   "reference_solved": 50
+   "reference_solved": 50,
+   "pre_tp": 31,
+   "pre_fp": 262,
+   "pre_fn": 0,
+   "eff_tp": 12,
+   "eff_fp": 0,
+   "eff_fn": 0,
+   "app_tp": 2822,
+   "app_fp": 0,
+   "app_fn": 0,
+   "change_tp": 5644,
+   "change_fp": 0,
+   "change_fn": 0
   },
   {
    "demos": 1,
@@ -213,7 +438,19 @@
    "solved": 50,
    "valid": 50,
    "limit": 0,
-   "reference_solved": 50
+   "reference_solved": 50,
+   "pre_tp": 31,
+   "pre_fp": 262,
+   "pre_fn": 0,
+   "eff_tp": 12,
+   "eff_fp": 0,
+   "eff_fn": 0,
+   "app_tp": 2737,
+   "app_fp": 0,
+   "app_fn": 0,
+   "change_tp": 5474,
+   "change_fp": 0,
+   "change_fn": 0
   },
   {
    "demos": 2,
@@ -224,7 +461,19 @@
    "solved": 50,
    "valid": 50,
    "limit": 0,
-   "reference_solved": 50
+   "reference_solved": 50,
+   "pre_tp": 31,
+   "pre_fp": 262,
+   "pre_fn": 0,
+   "eff_tp": 12,
+   "eff_fp": 0,
+   "eff_fn": 0,
+   "app_tp": 2737,
+   "app_fp": 0,
+   "app_fn": 0,
+   "change_tp": 5474,
+   "change_fp": 0,
+   "change_fn": 0
   },
   {
    "demos": 3,
@@ -235,7 +484,19 @@
    "solved": 50,
    "valid": 50,
    "limit": 0,
-   "reference_solved": 50
+   "reference_solved": 50,
+   "pre_tp": 31,
+   "pre_fp": 262,
+   "pre_fn": 0,
+   "eff_tp": 12,
+   "eff_fp": 0,
+   "eff_fn": 0,
+   "app_tp": 2737,
+   "app_fp": 0,
+   "app_fn": 0,
+   "change_tp": 5474,
+   "change_fp": 0,
+   "change_fn": 0
   },
   {
    "demos": 5,
@@ -246,7 +507,19 @@
    "solved": 50,
    "valid": 50,
    "limit": 0,
-   "reference_solved": 50
+   "reference_solved": 50,
+   "pre_tp": 31,
+   "pre_fp": 262,
+   "pre_fn": 0,
+   "eff_tp": 12,
+   "eff_fp": 0,
+   "eff_fn": 0,
+   "app_tp": 2737,
+   "app_fp": 0,
+   "app_fn": 0,
+   "change_tp": 5474,
+   "change_fp": 0,
+   "change_fn": 0
   },
   {
    "demos": 10,
@@ -257,7 +530,19 @@
    "solved": 50,
    "valid": 50,
    "limit": 0,
-   "reference_solved": 50
+   "reference_solved": 50,
+   "pre_tp": 31,
+   "pre_fp": 262,
+   "pre_fn": 0,
+   "eff_tp": 12,
+   "eff_fp": 0,
+   "eff_fn": 0,
+   "app_tp": 2737,
+   "app_fp": 0,
+   "app_fn": 0,
+   "change_tp": 5474,
+   "change_fp": 0,
+   "change_fn": 0
   },
   {
    "demos": 20,
@@ -268,7 +553,19 @@
    "solved": 50,
    "valid": 50,
    "limit": 0,
-   "reference_solved": 50
+   "reference_solved": 50,
+   "pre_tp": 31,
+   "pre_fp": 262,
+   "pre_fn": 0,
+   "eff_tp": 12,
+   "eff_fp": 0,
+   "eff_fn": 0,
+   "app_tp": 2737,
+   "app_fp": 0,
+   "app_fn": 0,
+   "change_tp": 5474,
+   "change_fp": 0,
+   "change_fn": 0
   },
   {
    "demos": 1,
@@ -279,7 +576,19 @@
    "solved": 10,
    "valid": 10,
    "limit": 0,
-   "reference_solved": 50
+   "reference_solved": 50,
+   "pre_tp": 31,
+   "pre_fp": 266,
+   "pre_fn": 0,
+   "eff_tp": 12,
+   "eff_fp": 0,
+   "eff_fn": 0,
+   "app_tp": 1816,
+   "app_fp": 0,
+   "app_fn": 940,
+   "change_tp": 3632,
+   "change_fp": 0,
+   "change_fn": 0
   },
   {
    "demos": 2,
@@ -290,7 +599,19 @@
    "solved": 50,
    "valid": 50,
    "limit": 0,
-   "reference_solved": 50
+   "reference_solved": 50,
+   "pre_tp": 31,
+   "pre_fp": 262,
+   "pre_fn": 0,
+   "eff_tp": 12,
+   "eff_fp": 0,
+   "eff_fn": 0,
+   "app_tp": 2756,
+   "app_fp": 0,
+   "app_fn": 0,
+   "change_tp": 5512,
+   "change_fp": 0,
+   "change_fn": 0
   },
   {
    "demos": 3,
@@ -301,7 +622,19 @@
    "solved": 50,
    "valid": 50,
    "limit": 0,
-   "reference_solved": 50
+   "reference_solved": 50,
+   "pre_tp": 31,
+   "pre_fp": 262,
+   "pre_fn": 0,
+   "eff_tp": 12,
+   "eff_fp": 0,
+   "eff_fn": 0,
+   "app_tp": 2756,
+   "app_fp": 0,
+   "app_fn": 0,
+   "change_tp": 5512,
+   "change_fp": 0,
+   "change_fn": 0
   },
   {
    "demos": 5,
@@ -312,7 +645,19 @@
    "solved": 50,
    "valid": 50,
    "limit": 0,
-   "reference_solved": 50
+   "reference_solved": 50,
+   "pre_tp": 31,
+   "pre_fp": 262,
+   "pre_fn": 0,
+   "eff_tp": 12,
+   "eff_fp": 0,
+   "eff_fn": 0,
+   "app_tp": 2756,
+   "app_fp": 0,
+   "app_fn": 0,
+   "change_tp": 5512,
+   "change_fp": 0,
+   "change_fn": 0
   },
   {
    "demos": 10,
@@ -323,7 +668,19 @@
    "solved": 50,
    "valid": 50,
    "limit": 0,
-   "reference_solved": 50
+   "reference_solved": 50,
+   "pre_tp": 31,
+   "pre_fp": 262,
+   "pre_fn": 0,
+   "eff_tp": 12,
+   "eff_fp": 0,
+   "eff_fn": 0,
+   "app_tp": 2756,
+   "app_fp": 0,
+   "app_fn": 0,
+   "change_tp": 5512,
+   "change_fp": 0,
+   "change_fn": 0
   },
   {
    "demos": 20,
@@ -334,7 +691,19 @@
    "solved": 50,
    "valid": 50,
    "limit": 0,
-   "reference_solved": 50
+   "reference_solved": 50,
+   "pre_tp": 31,
+   "pre_fp": 262,
+   "pre_fn": 0,
+   "eff_tp": 12,
+   "eff_fp": 0,
+   "eff_fn": 0,
+   "app_tp": 2756,
+   "app_fp": 0,
+   "app_fn": 0,
+   "change_tp": 5512,
+   "change_fp": 0,
+   "change_fn": 0
   }
  ]
 }

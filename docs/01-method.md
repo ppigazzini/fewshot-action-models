@@ -71,8 +71,26 @@ The reference solves every test problem in every published study, so the score t
 the solving ratio of Stern et al. (2025), and solved minus valid over the test problems is
 their false-plan ratio: 0 in every SAM row, as the guarantee requires.
 
+Each row also records the model-quality counts of Stern et al. (2025), as true positives,
+false positives and false negatives summed over actions (`amlearn/metrics.py`):
+
+| family | compared |
+|---|---|
+| preconditions | each reference action's precondition literals, an atom with its sign, against the learned action's; an action the model lacks counts every reference literal as a false negative |
+| effects | the same for the add and delete effects |
+| applicability | on each test state, the ground actions each model applies |
+| changes | for a ground action both models apply on a test state, the atoms each changes |
+
+The test states are those of a reference random walk of `walk_length` steps from each test
+problem's initial state, from a random stream of their own: 550 per seed for 50 test
+problems and 10 steps. A safe model applies nothing the reference refuses and changes
+exactly what the reference changes there, so its applicability false positives and its
+change false positives and negatives are 0; every SAM row of every study records 0 for
+all three, and 0 effect false positives.
+
 Every number a study records is a count. Ratios are computed where they are printed, so a
 study file compares exactly across platforms and no rounding rule is part of a result.
+Precision and recall are printed from counts pooled over seeds.
 
 ## The unsafe contrast
 

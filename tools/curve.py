@@ -10,6 +10,7 @@ differs: a published number is one this code still produces.
 
 import argparse
 import sys
+from collections.abc import Callable
 from pathlib import Path
 
 from amlearn.curve import rows_for_seed
@@ -17,20 +18,32 @@ from amlearn.domains import BENCHMARKS
 from amlearn.study import FORMAT, Row, Study, differences, dumps, loads
 
 
-def measure(  # noqa: PLR0913, PLR0917 - the settings a study records
+def measure(  # noqa: PLR0913 - the settings a study records
     benchmark: str,
     demos: list[int],
     seeds: list[int],
+    *,
     test_problems: int,
     max_nodes: int,
-    learner: str = "sam",
+    learner: str,
+    train_sizes: list[int],
+    test_sizes: list[int],
+    walk_length: int,
 ) -> Study:
     """Run the curve for every seed and return it as a study."""
     bench = BENCHMARKS[benchmark]
     rows: list[Row] = []
     for seed in seeds:
         rows += rows_for_seed(
-            bench, seed, demos, test_problems=test_problems, max_nodes=max_nodes, learner=learner
+            bench,
+            seed,
+            demos,
+            test_problems=test_problems,
+            max_nodes=max_nodes,
+            learner=learner,
+            train_sizes=train_sizes,
+            test_sizes=test_sizes,
+            walk_length=walk_length,
         )
     return Study(
         format=FORMAT,
@@ -39,6 +52,9 @@ def measure(  # noqa: PLR0913, PLR0917 - the settings a study records
         planner="bfs",
         max_nodes=max_nodes,
         test_problems=test_problems,
+        train_sizes=train_sizes,
+        test_sizes=test_sizes,
+        walk_length=walk_length,
         rows=rows,
     )
 
@@ -83,7 +99,35 @@ def table(study: Study) -> str:
         scored = [r["valid"] / r["reference_solved"] for r in rows if r["reference_solved"]]
         score = _pct(scored) if scored else "n/a"
         lines.append(f"| {n} | {trans:.1f} | {acts:.1f} | {solved} | {valid} | {score} |")
+    lines += [
+        "",
+        "Precision / recall %, counts pooled over seeds:",
+        "",
+        "| demos | preconditions | effects | applicability | changes |",
+        "|---:|---:|---:|---:|---:|",
+    ]
+    for n in sorted({r["demos"] for r in study["rows"]}):
+        rows = [r for r in study["rows"] if r["demos"] == n]
+        cells = [_pooled(rows, counts) for counts in FAMILIES]
+        lines.append(f"| {n} | {' | '.join(cells)} |")
     return "\n".join(lines)
+
+
+#: The model-quality counts of a row, family by family, in the order the table prints them.
+FAMILIES: tuple[Callable[[Row], tuple[int, int, int]], ...] = (
+    lambda r: (r["pre_tp"], r["pre_fp"], r["pre_fn"]),
+    lambda r: (r["eff_tp"], r["eff_fp"], r["eff_fn"]),
+    lambda r: (r["app_tp"], r["app_fp"], r["app_fn"]),
+    lambda r: (r["change_tp"], r["change_fp"], r["change_fn"]),
+)
+
+
+def _pooled(rows: list[Row], counts: Callable[[Row], tuple[int, int, int]]) -> str:
+    """Return the pooled precision and recall of one family of counts, as percentages."""
+    tp, fp, fn = (sum(column) for column in zip(*map(counts, rows), strict=True))
+    precision = f"{100 * tp / (tp + fp):.1f}" if tp + fp else "n/a"
+    recall = f"{100 * tp / (tp + fn):.1f}" if tp + fn else "n/a"
+    return f"{precision} / {recall}"
 
 
 def main(argv: list[str]) -> int:
@@ -95,6 +139,9 @@ def main(argv: list[str]) -> int:
     parser.add_argument("--test", type=_positive, default=50, help="test problems per seed")
     parser.add_argument("--max-nodes", type=_positive, default=200_000)
     parser.add_argument("--learner", choices=["sam", "optimistic"], default="sam")
+    parser.add_argument("--train-sizes", type=_counts, help="default: the benchmark's")
+    parser.add_argument("--test-sizes", type=_counts, help="default: the benchmark's")
+    parser.add_argument("--walk-length", type=_positive, default=10, help="steps per test walk")
     out = parser.add_mutually_exclusive_group()
     out.add_argument("--json", type=Path, help="write the study file")
     out.add_argument("--check", type=Path, help="rerun a study file and compare")
@@ -111,9 +158,12 @@ def main(argv: list[str]) -> int:
             expected["benchmark"],
             demos,
             seeds,
-            expected["test_problems"],
-            expected["max_nodes"],
-            expected["learner"],
+            test_problems=expected["test_problems"],
+            max_nodes=expected["max_nodes"],
+            learner=expected["learner"],
+            train_sizes=expected["train_sizes"],
+            test_sizes=expected["test_sizes"],
+            walk_length=expected["walk_length"],
         )
         diff = differences(expected, actual)
         print(table(actual))
@@ -122,8 +172,17 @@ def main(argv: list[str]) -> int:
         print(f"\n{len(diff)} difference(s) against {args.check}")
         return 1 if diff else 0
 
+    bench = BENCHMARKS[args.benchmark]
     study = measure(
-        args.benchmark, args.demos, list(range(args.seeds)), args.test, args.max_nodes, args.learner
+        args.benchmark,
+        args.demos,
+        list(range(args.seeds)),
+        test_problems=args.test,
+        max_nodes=args.max_nodes,
+        learner=args.learner,
+        train_sizes=args.train_sizes or list(bench.train_sizes),
+        test_sizes=args.test_sizes or list(bench.test_sizes),
+        walk_length=args.walk_length,
     )
     print(table(study))
     if args.json:
