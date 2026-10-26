@@ -25,10 +25,10 @@ reaches: `limit` is 0 in every row. Mean over seeds, per-seed range in brackets.
 
 - Every plan a learned model produced is valid under the reference: 100 % of solved at every
   point, as the safety guarantee requires.
-- From 3 demonstrations all four actions are observed in every seed, yet the score is 80.4 %.
-  With every action present, an unsolved test problem needs a grounding the learned
-  precondition refuses and the reference admits: a literal that held in every observed
-  pre-state stays in the model.
+- From 3 demonstrations all four actions are observed in every seed, yet the score is
+  80.4 %. With every action present, an unsolved test problem needs a grounding the
+  learned precondition refuses and the reference admits: a literal that held in every
+  observed pre-state stays in the model.
 - 10 demonstrations (43.6 transitions on average) reach the reference score in all 5 seeds.
 
 ## Logistics

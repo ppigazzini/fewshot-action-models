@@ -6,8 +6,9 @@
 uv sync
 ```
 
-Python 3.14 or later, as `requires-python` in `pyproject.toml` says. The runtime dependencies are clingo (the second
-planner), valgebra with annotated-types and typing-extensions (the study file check).
+Python 3.14 or later, as `requires-python` in `pyproject.toml` says. The runtime
+dependencies are clingo (the second planner), valgebra with annotated-types and
+typing-extensions (the study and trace file checks).
 
 ## Learn a model
 
@@ -41,8 +42,8 @@ PDDL domain file ([Use another domain](#use-another-domain)).
 `amlearn.tracefile.TraceSchema` compiles a valgebra schema from it, so an atom must be one
 of the predicates with exactly its arity, an action one of the actions with exactly its
 parameter count, an object a non-empty string, and a step carries no key the format does
-not name. Every failure on
-every line is reported before anything is learned, with its line and path:
+not name. Every failure on every line is reported before anything is learned, with its
+line and path:
 
 ```
 line 1: at steps[0].action: stack takes 2 objects, got 1
@@ -95,8 +96,8 @@ uv run python tools/curve.py blocksworld --demos 1,2,3,5,10,20,50 --seeds 5 --te
 uv run python tools/curve.py blocksworld --check docs/studies/blocksworld.json
 ```
 
-A study file holds counts only. `--check` reads the settings it records, reruns the curve and
-exits 1 on any count that differs; CI runs it on every published study.
+A study file holds counts only. `--check` reads the settings it records, reruns the curve
+and exits 1 on any count that differs; CI runs it on every published study.
 
 ## Use another domain
 
