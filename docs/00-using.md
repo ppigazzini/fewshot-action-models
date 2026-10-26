@@ -94,8 +94,13 @@ effects, applicability and changes.
 `--train-sizes` and `--test-sizes` replace the benchmark's sizes, and `--probe-steps` the
 length of the reference walks whose states the predictive counts are taken on.
 `--demonstrator walk --walk-steps 10` shows the learner random walks of 10 steps from the
-training problems instead of shortest plans. A study records every one of these settings,
-and `--check` reruns with them.
+training problems instead of shortest plans. `--noise 50` puts an observer between the
+demonstrations and the learner that misses each true atom with probability 50 per mille,
+and `--masked 300` one that hides each atom with probability 300 per mille; SAM and the
+optimistic learner read a hidden atom as false, `--learner pisam` leaves it unknown. Each
+row counts in `unexplained` the steps of its demonstrations the STRIPS check of the trace
+file reader refutes. A study records every one of these settings, and `--check` reruns
+with them.
 
 ## Publish and check a study
 

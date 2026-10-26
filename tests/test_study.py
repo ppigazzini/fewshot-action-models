@@ -13,6 +13,7 @@ def _row(**changes: int) -> Row:
         "demos": 5,
         "seed": 0,
         "transitions": 20,
+        "unexplained": 0,
         "actions_learned": 4,
         "problems": 10,
         "solved": 8,
@@ -40,6 +41,8 @@ def _study(*rows: Row) -> Study:
         demonstrator="shortest",
         walk_steps=0,
         probe_steps=10,
+        noise_permille=0,
+        masked_permille=0,
         rows=list(rows) or [_row()],
     )
 

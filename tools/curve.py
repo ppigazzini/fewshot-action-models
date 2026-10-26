@@ -31,6 +31,8 @@ def measure(  # noqa: PLR0913 - the settings a study records
     demonstrator: str,
     walk_steps: int,
     probe_steps: int,
+    noise_permille: int,
+    masked_permille: int,
 ) -> Study:
     """Run the curve for every seed and return it as a study."""
     bench = BENCHMARKS[benchmark]
@@ -48,11 +50,13 @@ def measure(  # noqa: PLR0913 - the settings a study records
             demonstrator=demonstrator,
             walk_steps=walk_steps,
             probe_steps=probe_steps,
+            noise_permille=noise_permille,
+            masked_permille=masked_permille,
         )
     return Study(
         format=FORMAT,
         benchmark=benchmark,
-        learner="sam" if learner == "sam" else "optimistic",
+        learner="pisam" if learner == "pisam" else "sam" if learner == "sam" else "optimistic",
         planner="bfs",
         max_nodes=max_nodes,
         test_problems=test_problems,
@@ -61,6 +65,8 @@ def measure(  # noqa: PLR0913 - the settings a study records
         demonstrator="walk" if demonstrator == "walk" else "shortest",
         walk_steps=walk_steps,
         probe_steps=probe_steps,
+        noise_permille=noise_permille,
+        masked_permille=masked_permille,
         rows=rows,
     )
 
@@ -69,6 +75,14 @@ def _positive(text: str) -> int:
     value = int(text)
     if value < 1:
         msg = f"{value} is not a positive count"
+        raise argparse.ArgumentTypeError(msg)
+    return value
+
+
+def _rate(text: str) -> int:
+    value = int(text)
+    if not 0 <= value <= 1000:  # noqa: PLR2004 - per mille
+        msg = f"{value} is not a rate per mille"
         raise argparse.ArgumentTypeError(msg)
     return value
 
@@ -144,12 +158,14 @@ def main(argv: list[str]) -> int:
     parser.add_argument("--seeds", type=_positive, default=3)
     parser.add_argument("--test", type=_positive, default=50, help="test problems per seed")
     parser.add_argument("--max-nodes", type=_positive, default=200_000)
-    parser.add_argument("--learner", choices=["sam", "optimistic"], default="sam")
+    parser.add_argument("--learner", choices=["sam", "optimistic", "pisam"], default="sam")
     parser.add_argument("--train-sizes", type=_counts, help="default: the benchmark's")
     parser.add_argument("--test-sizes", type=_counts, help="default: the benchmark's")
     parser.add_argument("--demonstrator", choices=["shortest", "walk"], default="shortest")
     parser.add_argument("--walk-steps", type=_positive, default=10, help="steps per walk shown")
     parser.add_argument("--probe-steps", type=_positive, default=10, help="steps per test walk")
+    parser.add_argument("--noise", type=_rate, default=0, help="atoms missed, per mille")
+    parser.add_argument("--masked", type=_rate, default=0, help="atoms hidden, per mille")
     out = parser.add_mutually_exclusive_group()
     out.add_argument("--json", type=Path, help="write the study file")
     out.add_argument("--check", type=Path, help="rerun a study file and compare")
@@ -174,6 +190,8 @@ def main(argv: list[str]) -> int:
             demonstrator=expected["demonstrator"],
             walk_steps=expected["walk_steps"],
             probe_steps=expected["probe_steps"],
+            noise_permille=expected["noise_permille"],
+            masked_permille=expected["masked_permille"],
         )
         diff = differences(expected, actual)
         print(table(actual))
@@ -195,6 +213,8 @@ def main(argv: list[str]) -> int:
         demonstrator=args.demonstrator,
         walk_steps=args.walk_steps if args.demonstrator == "walk" else 0,
         probe_steps=args.probe_steps,
+        noise_permille=args.noise,
+        masked_permille=args.masked,
     )
     print(table(study))
     if args.json:

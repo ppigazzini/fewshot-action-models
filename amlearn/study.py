@@ -37,6 +37,7 @@ class Row(TypedDict, closed=True):
     demos: Positive
     seed: Count
     transitions: Count
+    unexplained: Count
     actions_learned: Count
     problems: Positive
     solved: Count
@@ -62,7 +63,7 @@ class Study(TypedDict, closed=True):
 
     format: Literal[2]
     benchmark: str
-    learner: Literal["sam", "optimistic"]
+    learner: Literal["sam", "optimistic", "pisam"]
     planner: Literal["bfs"]
     max_nodes: Positive
     test_problems: Positive
@@ -71,6 +72,8 @@ class Study(TypedDict, closed=True):
     demonstrator: Literal["shortest", "walk"]
     walk_steps: Count
     probe_steps: Count
+    noise_permille: Count
+    masked_permille: Count
     rows: list[Row]
 
 
@@ -87,6 +90,8 @@ SETTINGS = (
     "demonstrator",
     "walk_steps",
     "probe_steps",
+    "noise_permille",
+    "masked_permille",
 )
 
 

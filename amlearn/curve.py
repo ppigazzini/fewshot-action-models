@@ -16,9 +16,9 @@ from amlearn.domains import Benchmark, draw
 from amlearn.learn import Signature, optimistic, sam
 from amlearn.metrics import Counts, predictive, probes, syntactic
 from amlearn.plan.bfs import bfs
-from amlearn.strips import Domain, Problem
+from amlearn.strips import Domain, Observed, Problem
 from amlearn.study import Row
-from amlearn.traces import demonstrate, random_walk
+from amlearn.traces import demonstrate, observe, random_walk
 from amlearn.validate import validate
 
 
@@ -35,6 +35,8 @@ def rows_for_seed(  # noqa: PLR0913 - the measurement's settings, each recorded 
     demonstrator: str = "shortest",
     walk_steps: int = 0,
     probe_steps: int = 10,
+    noise_permille: int = 0,
+    masked_permille: int = 0,
 ) -> list[Row]:
     """Return one row per demonstration count for one seed.
 
@@ -45,8 +47,14 @@ def rows_for_seed(  # noqa: PLR0913 - the measurement's settings, each recorded 
     the training problem, drawn from a stream of its own. The predictive counts are taken
     on the states of a reference random walk of ``probe_steps`` steps from each test problem,
     from another stream, so they leave every other count of the row unchanged.
+
+    The learner sees the demonstrations through `amlearn.traces.observe`, which misses each
+    true atom with probability ``noise_permille`` / 1000 and hides each atom with
+    probability ``masked_permille`` / 1000, from a stream of its own. SAM and the
+    optimistic model read a hidden atom as false; PI-SAM (``learner="pisam"``) leaves it
+    unknown. ``unexplained`` counts the steps of the first demonstrations the STRIPS check
+    of `amlearn.learn.sam.unexplained` refutes, as the trace file reader would see them.
     """
-    learn = sam.learn if learner == "sam" else optimistic.learn
     train_rng = random.Random(f"{bench.name}:train:{seed}")
     test_rng = random.Random(f"{bench.name}:test:{seed}")
     pool = draw(bench, train_rng, max(demos), tuple(train_sizes or bench.train_sizes))
@@ -56,6 +64,18 @@ def rows_for_seed(  # noqa: PLR0913 - the measurement's settings, each recorded 
         traces = [random_walk(bench.domain, p, walk_steps, walk_rng) for p in pool]
     else:
         traces = [demonstrate(bench.domain, p, max_nodes=max_nodes) for p in pool]
+    observer = random.Random(f"{bench.name}:observer:{seed}")
+    observed = [
+        observe(
+            trace,
+            observer,
+            predicates=bench.domain.predicates,
+            objects=problem.objects,
+            drop=noise_permille / 1000,
+            hide=masked_permille / 1000,
+        )
+        for trace, problem in zip(traces, pool, strict=True)
+    ]
     reference_ok = [bfs(bench.domain, p, max_nodes=max_nodes).plan is not None for p in tests]
     reference_solved = sum(reference_ok)
     states = probes(bench.domain, tests, probe_steps, random.Random(f"{bench.name}:states:{seed}"))
@@ -65,7 +85,7 @@ def rows_for_seed(  # noqa: PLR0913 - the measurement's settings, each recorded 
     solved = valid = limit = 0
     pre = eff = app = change = Counts(0, 0, 0)
     for n in demos:
-        model = learn(signature, traces[:n])
+        model, refuted = _learn(signature, observed[:n], learner)
         # Traces that show nothing new leave the model as it was, and an equal model searches
         # and scores the same: two rows in three of every published study repeat the row
         # before.
@@ -79,6 +99,7 @@ def rows_for_seed(  # noqa: PLR0913 - the measurement's settings, each recorded 
                 demos=n,
                 seed=seed,
                 transitions=sum(len(t) for t in traces[:n]),
+                unexplained=refuted,
                 actions_learned=len(model.actions),
                 problems=len(tests),
                 solved=solved,
@@ -100,6 +121,27 @@ def rows_for_seed(  # noqa: PLR0913 - the measurement's settings, each recorded 
             )
         )
     return rows
+
+
+def _learn(
+    signature: Signature, observed: Sequence[Sequence[Observed]], learner: str
+) -> tuple[Domain, int]:
+    """Return the model ``learner`` learns, and how many steps the STRIPS check refutes.
+
+    The check reads the steps as the learner does: PI-SAM with its hidden atoms, the others
+    with every hidden atom false, under the SAM model of those steps.
+    """
+    if learner == "pisam":
+        model = sam.learn_observed(signature, observed)
+        steps = [(o.step, o.hidden, o.next_hidden) for t in observed for o in t]
+        check = model
+    else:
+        seen = [tuple(o.step for o in t) for t in observed]
+        check = sam.learn(signature, seen)
+        model = check if learner == "sam" else optimistic.learn(signature, seen)
+        steps = [(step, frozenset(), frozenset()) for t in seen for step in t]
+    refuted = sum(bool(sam.unexplained(check, *step)) for step in steps)
+    return model, refuted
 
 
 def _scores(

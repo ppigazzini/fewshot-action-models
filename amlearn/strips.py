@@ -250,6 +250,19 @@ class Transition:
 type Trace = tuple[Transition, ...]
 
 
+@dataclass(frozen=True, slots=True)
+class Observed:
+    """One step as an observer saw it, which may hide atoms.
+
+    ``step`` holds the atoms seen true before and after, ``hidden`` and ``next_hidden`` those
+    whose value was not seen; any other atom was seen false.
+    """
+
+    step: Transition
+    hidden: frozenset[Atom] = frozenset()
+    next_hidden: frozenset[Atom] = frozenset()
+
+
 def lifted_atoms(predicates: Mapping[str, int], params: tuple[str, ...]) -> Iterator[Atom]:
     """Yield every atom over ``params``, repeated variables included, in a fixed order."""
     for name in sorted(predicates):

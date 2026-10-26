@@ -3,14 +3,26 @@
 A demonstration is a shortest plan executed under the reference domain, every state
 recorded. That makes a demonstration goal-directed, as a human one is, and so biased: an
 action a shortest plan never takes is never observed, and the learned model omits it.
+`observe` is the observer between the world and the learner, which may miss or hide atoms.
 `random_walk` is the goal-independent contrast: a uniform choice among the applicable
 actions, biased only toward states near the start and actions with many groundings.
 """
 
+import itertools
 import random
+from collections.abc import Mapping
 
 from amlearn.plan.bfs import bfs
-from amlearn.strips import Domain, GroundAction, Problem, StripsError, Trace, Transition
+from amlearn.strips import (
+    Domain,
+    GroundAction,
+    Observed,
+    Problem,
+    State,
+    StripsError,
+    Trace,
+    Transition,
+)
 
 
 def execute(domain: Domain, problem: Problem, plan: tuple[GroundAction, ...]) -> Trace:
@@ -50,3 +62,40 @@ def random_walk(domain: Domain, problem: Problem, length: int, rng: random.Rando
         steps.append(Transition(state, chosen.label, succ))
         state = succ
     return tuple(steps)
+
+
+def observe(  # noqa: PLR0913 - the observer's two rates, and what it can see
+    trace: Trace,
+    rng: random.Random,
+    *,
+    predicates: Mapping[str, int],
+    objects: tuple[str, ...],
+    drop: float = 0.0,
+    hide: float = 0.0,
+) -> tuple[Observed, ...]:
+    """Return ``trace`` as an observer saw it.
+
+    The observer misses each true atom of a state with probability ``drop`` and reports it
+    false, which is noise; and hides each atom over ``objects`` with probability ``hide``
+    and reports it unknown, which is partial observability. Each state is seen once, so the
+    step that ends in a state and the step that starts there see it alike, and a rate of 0
+    draws nothing from ``rng``.
+    """
+    universe = [
+        (name, *args)
+        for name in sorted(predicates)
+        for args in itertools.product(sorted(objects), repeat=predicates[name])
+        if hide
+    ]
+    states = [trace[0].state, *(step.next_state for step in trace)] if trace else []
+    seen: list[State] = []
+    hidden: list[State] = []
+    for state in states:
+        kept = frozenset(a for a in sorted(state) if not (drop and rng.random() < drop))
+        unknown = frozenset(a for a in universe if hide and rng.random() < hide)
+        seen.append(kept - unknown)
+        hidden.append(unknown)
+    return tuple(
+        Observed(Transition(seen[i], step.action, seen[i + 1]), hidden[i], hidden[i + 1])
+        for i, step in enumerate(trace)
+    )

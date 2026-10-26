@@ -4,10 +4,10 @@ import pytest
 
 from amlearn.domains import draw
 from amlearn.learn import Signature, optimistic
-from amlearn.learn.sam import learn, unexplained
+from amlearn.learn.sam import learn, learn_observed, unexplained
 from amlearn.plan.bfs import bfs
 from amlearn.strips import Action, Domain, Problem, StripsError, Transition, lifted_atoms
-from amlearn.traces import demonstrate, execute, random_walk
+from amlearn.traces import demonstrate, execute, observe, random_walk
 from amlearn.validate import validate
 
 
@@ -127,6 +127,75 @@ class TestVersionSpace:
             assert eff[name] == {(True, a) for a in action.add} | {
                 (False, a) for a in action.delete
             }
+
+
+class TestPartialObservability:
+    """PI-SAM: SAM's rules on the atoms seen both before and after a step."""
+
+    @staticmethod
+    def _observed(bench, seed, n, hide):
+        rng = random.Random(f"{bench.name}:pisam:{seed}")
+        problems = draw(bench, rng, n, bench.train_sizes)
+        return [
+            observe(
+                demonstrate(bench.domain, p),
+                rng,
+                predicates=bench.domain.predicates,
+                objects=p.objects,
+                hide=hide,
+            )
+            for p in problems
+        ]
+
+    def test_with_nothing_hidden_it_is_sam(self, bench):
+        observed = self._observed(bench, 0, 5, 0.0)
+        steps = [tuple(o.step for o in t) for t in observed]
+        signature = Signature.of(bench.domain)
+        assert learn_observed(signature, observed) == learn(signature, steps)
+
+    @pytest.mark.parametrize("hide", [0.1, 0.3])
+    def test_every_plan_of_a_model_from_masked_traces_is_valid(self, bench, hide):
+        for seed in range(2):
+            model = learn_observed(Signature.of(bench.domain), self._observed(bench, seed, 5, hide))
+            rng = random.Random(f"{bench.name}:pisam-test:{seed}")
+            for problem in draw(bench, rng, 10, bench.test_sizes):
+                plan = bfs(model, problem, max_nodes=50_000).plan
+                if plan is not None:
+                    assert validate(bench.domain, problem, plan).valid
+
+    def test_reading_hidden_atoms_as_false_is_unsafe(self, blocks):
+        # A hidden true precondition read as false prunes it from SAM's precondition.
+        observed = self._observed(blocks, 0, 10, 0.3)
+        model = learn(Signature.of(blocks.domain), [tuple(o.step for o in t) for t in observed])
+        rng = random.Random("closed-world")
+        invalid = 0
+        for problem in draw(blocks, rng, 10, blocks.test_sizes):
+            plan = bfs(model, problem, max_nodes=20_000).plan
+            invalid += plan is not None and not validate(blocks.domain, problem, plan).valid
+        assert invalid > 0
+
+    def test_an_atom_the_observer_misses_is_refuted_by_the_check(self, blocks):
+        rng = random.Random("noise")
+        problems = draw(blocks, rng, 10, blocks.train_sizes)
+        observed = [
+            observe(
+                demonstrate(blocks.domain, p),
+                rng,
+                predicates=blocks.domain.predicates,
+                objects=p.objects,
+                drop=0.05,
+            )
+            for p in problems
+        ]
+        steps = [tuple(o.step for o in t) for t in observed]
+        model = learn(Signature.of(blocks.domain), steps)
+        assert any(unexplained(model, step) for trace in steps for step in trace)
+
+    def test_masked_steps_replay_under_their_model(self, bench):
+        observed = self._observed(bench, 1, 5, 0.3)
+        model = learn_observed(Signature.of(bench.domain), observed)
+        steps = [o for t in observed for o in t]
+        assert all(unexplained(model, o.step, o.hidden, o.next_hidden) == [] for o in steps)
 
 
 class TestTheoremStepByStep:

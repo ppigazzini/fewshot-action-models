@@ -31,6 +31,7 @@ from amlearn.strips import (
     Action,
     Atom,
     Domain,
+    Observed,
     StripsError,
     Trace,
     Transition,
@@ -60,6 +61,18 @@ def learn(signature: Signature, traces: Iterable[Trace]) -> Domain:
     than one schema atom. One whose action the signature lacks, or that names the wrong
     number of objects, raises `StripsError`.
     """
+    return learn_observed(signature, ((Observed(step) for step in trace) for trace in traces))
+
+
+def learn_observed(signature: Signature, traces: Iterable[Iterable[Observed]]) -> Domain:
+    """Return the safe model of traces an observer may have hidden atoms of: PI-SAM.
+
+    After Le, Juba and Stern (2024): SAM's rules, applied to an atom only where its value is
+    seen both before and after the step. Rule 1 alone would be unsafe from a pre-state:
+    an atom seen false before and hidden after may be an effect, and dropping its literal
+    from the precondition would let the model apply the action where that effect changes a
+    state the model thinks unchanged. With nothing hidden this is `learn`.
+    """
     candidates = {
         name: tuple(lifted_atoms(signature.predicates, params))
         for name, params in signature.actions.items()
@@ -69,7 +82,8 @@ def learn(signature: Signature, traces: Iterable[Trace]) -> Domain:
     add: dict[str, set[Atom]] = {}
     delete: dict[str, set[Atom]] = {}
     for trace in traces:
-        for step in trace:
+        for seen in trace:
+            step = seen.step
             params = _params(signature, step.action)
             name, objects = step.action[0], step.action[1:]
             if not is_injective(objects):
@@ -80,8 +94,11 @@ def learn(signature: Signature, traces: Iterable[Trace]) -> Domain:
                 add[name] = set()
                 delete[name] = set()
             binding = dict(zip(params, objects, strict=True))
+            unseen = seen.hidden | seen.next_hidden
             for atom in candidates[name]:
                 ground = (atom[0], *(binding[v] for v in atom[1:]))
+                if ground in unseen:
+                    continue
                 before = ground in step.state
                 after = ground in step.next_state
                 if before:
@@ -106,7 +123,12 @@ def learn(signature: Signature, traces: Iterable[Trace]) -> Domain:
     return Domain(f"{signature.name}-sam", dict(signature.predicates), actions)
 
 
-def unexplained(model: Domain, step: Transition) -> list[str]:
+def unexplained(
+    model: Domain,
+    step: Transition,
+    hidden: frozenset[Atom] = frozenset(),
+    next_hidden: frozenset[Atom] = frozenset(),
+) -> list[str]:
     """Return every atom ``model`` gets wrong replaying ``step``, one reason per atom.
 
     ``model`` is the one `learn` returns from traces that include ``step``. Then every step
@@ -118,7 +140,9 @@ def unexplained(model: Domain, step: Transition) -> list[str]:
     effect another step of the same action shows fails to happen here.
 
     A step whose action repeats an object is one no model takes under injective grounding,
-    and its reason says so; `learn` skips it.
+    and its reason says so; `learn` skips it. An atom in ``hidden`` or ``next_hidden`` was
+    not seen on one side of the step, and is not compared: for the model `learn_observed`
+    returns, the same argument holds over the atoms seen on both sides.
     """
     name, objects = step.action[0], step.action[1:]
     if not is_injective(objects):
@@ -128,7 +152,7 @@ def unexplained(model: Domain, step: Transition) -> list[str]:
     replayed = action.ground(objects).apply(step.state)
     param = dict(zip(objects, action.params, strict=True))
     reasons: list[str] = []
-    for atom in sorted(replayed ^ step.next_state):
+    for atom in sorted((replayed ^ step.next_state) - hidden - next_hidden):
         outside = sorted({o for o in atom[1:] if o not in param})
         if outside:
             reasons.append(
