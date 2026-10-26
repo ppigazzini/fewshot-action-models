@@ -237,5 +237,6 @@ These three studies take about 13 minutes and are checked weekly
 - The optimistic baseline on Logistics. Without preconditions nothing narrows the 11,880
   bindings of `drive-truck` over a dozen objects, and every search state tries them all.
 - Noisy or partially observed traces.
-- A learner between the two extremes. Inductive logic programming (Popper) on the same
-  traces is the planned comparison.
+- Negative demonstrations, failed actions. They alone narrow the upper boundary of a
+  precondition's version space (Aineto and Scala 2024), so with demonstrations only, no
+  learner between SAM and the optimistic model has evidence to choose a precondition.

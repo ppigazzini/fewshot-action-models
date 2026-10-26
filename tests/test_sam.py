@@ -6,7 +6,7 @@ from amlearn.domains import draw
 from amlearn.learn import Signature, optimistic
 from amlearn.learn.sam import learn, unexplained
 from amlearn.plan.bfs import bfs
-from amlearn.strips import Action, Domain, Problem, StripsError, Transition
+from amlearn.strips import Action, Domain, Problem, StripsError, Transition, lifted_atoms
 from amlearn.traces import demonstrate, execute, random_walk
 from amlearn.validate import validate
 
@@ -85,6 +85,48 @@ class TestWhatIsLearned:
         step = Transition(frozenset(), ("stack", "a", "a"), frozenset({("on", "a", "a")}))
         model = learn(Signature.of(blocks.domain), [(step,)])
         assert model.actions == {}
+
+
+class TestVersionSpace:
+    """SAM's model is the lower boundaries of the version spaces of Aineto and Scala (2024).
+
+    Their rule ULP shrinks a precondition's lower boundary to its intersection with each
+    pre-state, and ULE grows an effect's by each observed change; both over signed literals,
+    a step lifted by inverting its binding.
+    """
+
+    def test_sam_is_the_lower_boundary_of_every_version_space(self, bench):
+        traces = _traces(bench, 0, 5)
+        signature = Signature.of(bench.domain)
+        pre: dict[str, set] = {}
+        eff: dict[str, set] = {}
+        for step in (s for trace in traces for s in trace):
+            name, objects = step.action[0], step.action[1:]
+            params = signature.actions[name]
+            parameter = dict(zip(objects, params, strict=True))
+
+            def lift(atoms, parameter=parameter):
+                return {
+                    (a[0], *(parameter[o] for o in a[1:]))
+                    for a in atoms
+                    if all(o in parameter for o in a[1:])
+                }
+
+            before, after = lift(step.state), lift(step.next_state)
+            candidates = set(lifted_atoms(signature.predicates, params))
+            state = {(True, a) for a in before} | {(False, a) for a in candidates - before}
+            changes = {(True, a) for a in after - before} | {(False, a) for a in before - after}
+            pre[name] = pre.get(name, state) & state
+            eff[name] = eff.get(name, set()) | changes
+        model = learn(signature, traces)
+        assert set(model.actions) == set(pre)
+        for name, action in model.actions.items():
+            assert pre[name] == {(True, a) for a in action.pre_pos} | {
+                (False, a) for a in action.pre_neg
+            }
+            assert eff[name] == {(True, a) for a in action.add} | {
+                (False, a) for a in action.delete
+            }
 
 
 class TestTheoremStepByStep:

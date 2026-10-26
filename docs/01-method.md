@@ -31,6 +31,17 @@ injective grounding. `tests/test_sam.py` checks the property on every benchmark,
 demonstrations and from random walks, by validating each learned model's plans under the
 reference and comparing the final states.
 
+**SAM is the tightest sound model, and the optimistic model a complete one.** The models
+consistent with the traces form a version space. Its lower boundaries, the literals true in
+every observed pre-state and the union of the observed changes, are SAM's precondition and
+effects, and give the sound model no other sound model contains (Aineto and Scala 2024,
+Theorem 5). With demonstrations alone, none of them a failed action, the upper boundary of
+a precondition stays the empty conjunction (rule RUP of their Theorem 2), so the tightest
+complete model applies every action everywhere, its effects any consistent set (Theorem
+6): the optimistic model is its member with the observed changes. Every subset of SAM's
+precondition is consistent with the demonstrations, and nothing in them favours one over
+another; only negative demonstrations narrow the upper boundary.
+
 **Completeness is what safety costs.** An action never observed is absent from the model.
 A literal true by coincidence in every observation stays a precondition. Both make a
 learned model solve fewer problems than the reference, and the learning curve measures how
