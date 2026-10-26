@@ -50,10 +50,22 @@ test problems per seed.
 | 10 | 72.6 | 6.0 | 100.0 (100-100) | 100.0 (100-100) | 100.0 (100-100) |
 | 20 | 146.0 | 6.0 | 100.0 (100-100) | 100.0 (100-100) | 100.0 (100-100) |
 
-One demonstration observes 4.8 of the 6 actions on average; the seeds whose first
-demonstration moves a package between cities observe the airplane's actions and solve
-every test problem, the others solve none. Two demonstrations observe all six in every
-seed.
+One demonstration observes 4.8 of the 6 actions on average, and each seed's score follows
+what its demonstration leaves out (rows of `docs/studies/logistics.json` at 1
+demonstration):
+
+| seed | demonstration | actions | valid of 50 |
+|---:|---|---:|---:|
+| 0 | the airplane alone | 3 | 3 |
+| 1 | one truck within a city | 3 | 0 |
+| 2 | trucks and the airplane | 6 | 50 |
+| 3 | trucks and the airplane | 6 | 50 |
+| 4 | trucks that only drive to and unload at airports | 6 | 10 |
+
+Seed 4 observes every action and still solves 10: drive-truck keeps `airport(?to)` and
+unload-truck keeps `airport(?l)`, coincidences of its one demonstration, so its trucks
+never reach a post office. Two demonstrations observe all six actions in every seed and
+solve every test problem.
 
 ## What safety buys
 
