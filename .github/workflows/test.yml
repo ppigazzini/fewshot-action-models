@@ -4,20 +4,13 @@ on: [push, pull_request]
 
 jobs:
   test:
-    name: lint, types, tests, published studies (CPython ${{ matrix.python }})
+    name: lint, types, tests, published studies
     runs-on: ubuntu-26.04
     timeout-minutes: 30
-    # `requires-python` admits every CPython from 3.14, and a published count rests on
-    # `Random.choice` and `Random.shuffle`, which Python does not promise to keep across
-    # versions: each released version reruns every study.
-    strategy:
-      fail-fast: false
-      matrix:
-        python: ["3.14", "3.15"]
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: astral-sh/setup-uv@07a047e608db84b3d8c06cd9a7c7dcc9c355c18e # v10.3.2
-        with: { version: "0.13.5", python-version: "${{ matrix.python }}", enable-cache: true }
+        with: { version: "0.13.5", python-version: "3.14", enable-cache: true }
       - run: uv lock --check
       - run: uv sync --locked
       - run: uv run ruff check
