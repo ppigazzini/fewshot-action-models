@@ -71,6 +71,9 @@ The reference solves every test problem in every published study, so the score t
 the solving ratio of Stern et al. (2025), and solved minus valid over the test problems is
 their false-plan ratio: 0 in every SAM row, as the guarantee requires.
 
+Every number a study records is a count. Ratios are computed where they are printed, so a
+study file compares exactly across platforms and no rounding rule is part of a result.
+
 ## The unsafe contrast
 
 `amlearn/learn/optimistic.py` keeps SAM's effects and drops every precondition: the most
@@ -80,9 +83,6 @@ the same effects. Under a node bound it can solve fewer: every action applies in
 state, and the search can exhaust the bound where SAM's finds a plan. On blocksworld it
 hits the bound on 51 of 250 test problems from 3 demonstrations on, all of which SAM
 solves from 10 (`docs/04-results.md`). Its plans are judged by the same validator.
-
-Every number a study records is a count. Ratios are computed where they are printed, so a
-study file compares exactly across platforms and no rounding rule is part of a result.
 
 ## Limits
 
