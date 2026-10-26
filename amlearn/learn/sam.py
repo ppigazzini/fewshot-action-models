@@ -31,6 +31,7 @@ from amlearn.strips import (
     Action,
     Atom,
     Domain,
+    StripsError,
     Trace,
     Transition,
     is_injective,
@@ -39,12 +40,25 @@ from amlearn.strips import (
 )
 
 
+def _params(signature: Signature, label: tuple[str, ...]) -> tuple[str, ...]:
+    """Return the parameters of ``label``'s action, refusing a label the signature rejects."""
+    params = signature.actions.get(label[0])
+    if params is None:
+        msg = f"{render(label)}: not an action of {signature.name}"
+        raise StripsError(msg)
+    if len(params) != len(label) - 1:
+        msg = f"{render(label)}: {label[0]} takes {len(params)} objects"
+        raise StripsError(msg)
+    return params
+
+
 def learn(signature: Signature, traces: Iterable[Trace]) -> Domain:
     """Return the safe model of the actions observed in ``traces``.
 
     A transition whose action repeats an object is skipped: it lies outside the injective
     semantics the guarantee is stated for, and one of its ground atoms would lift to more
-    than one schema atom.
+    than one schema atom. One whose action the signature lacks, or that names the wrong
+    number of objects, raises `StripsError`.
     """
     candidates = {
         name: tuple(lifted_atoms(signature.predicates, params))
@@ -56,10 +70,10 @@ def learn(signature: Signature, traces: Iterable[Trace]) -> Domain:
     delete: dict[str, set[Atom]] = {}
     for trace in traces:
         for step in trace:
+            params = _params(signature, step.action)
             name, objects = step.action[0], step.action[1:]
             if not is_injective(objects):
                 continue
-            params = signature.actions[name]
             if name not in pre_pos:
                 pre_pos[name] = set(candidates[name])
                 pre_neg[name] = set(candidates[name])

@@ -6,7 +6,7 @@ from amlearn.domains import draw
 from amlearn.learn import Signature, optimistic
 from amlearn.learn.sam import learn, unexplained
 from amlearn.plan.bfs import bfs
-from amlearn.strips import Action, Domain, Problem, Transition
+from amlearn.strips import Action, Domain, Problem, StripsError, Transition
 from amlearn.traces import demonstrate, execute, random_walk
 from amlearn.validate import validate
 
@@ -68,6 +68,18 @@ class TestWhatIsLearned:
         nxt = frozenset({("holding", "a")})
         model = learn(Signature.of(blocks.domain), [(Transition(state, ("pick-up", "a"), nxt),)])
         assert set(model.actions) == {"pick-up"}
+
+    @pytest.mark.parametrize(
+        ("action", "expected"),
+        [
+            (("teleport", "a"), r"teleport\(a\): not an action of blocksworld"),
+            (("stack", "a"), r"stack\(a\): stack takes 2 objects"),
+        ],
+    )
+    def test_a_step_outside_the_signature_is_refused(self, blocks, action, expected):
+        step = Transition(frozenset(), action, frozenset())
+        with pytest.raises(StripsError, match=expected):
+            learn(Signature.of(blocks.domain), [(step,)])
 
     def test_a_transition_that_repeats_an_object_is_skipped(self, blocks):
         step = Transition(frozenset(), ("stack", "a", "a"), frozenset({("on", "a", "a")}))
