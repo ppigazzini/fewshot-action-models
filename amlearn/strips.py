@@ -39,6 +39,10 @@ class Action:
     _positions: tuple[tuple[tuple[str, tuple[int, ...]], ...], ...] = field(
         init=False, repr=False, compare=False
     )
+    # Every grounding made, by its objects. Test problems of a benchmark share their object
+    # names, so a model grounds the same bindings for each of them: a logistics study grounds
+    # each binding of a model about 50 times over.
+    _grounded: dict[tuple[str, ...], GroundedAction] = field(init=False, repr=False, compare=False)
 
     def __post_init__(self) -> None:
         if len(set(self.params)) != len(self.params):
@@ -56,9 +60,13 @@ class Action:
             for atoms in (self.pre_pos, self.pre_neg, self.add, self.delete)
         )
         object.__setattr__(self, "_positions", positions)
+        object.__setattr__(self, "_grounded", {})
 
     def ground(self, objects: tuple[str, ...]) -> GroundedAction:
         """Bind the parameters to ``objects`` in order."""
+        known = self._grounded.get(objects)
+        if known is not None:
+            return known
         if len(objects) != len(self.params):
             msg = f"{self.name} takes {len(self.params)} objects, got {len(objects)}"
             raise StripsError(msg)
@@ -66,7 +74,9 @@ class Action:
             frozenset((name, *[objects[i] for i in at]) for name, at in atoms)
             for atoms in self._positions
         )
-        return GroundedAction((self.name, *objects), pre_pos, pre_neg, add, delete)
+        grounded = GroundedAction((self.name, *objects), pre_pos, pre_neg, add, delete)
+        self._grounded[objects] = grounded
+        return grounded
 
 
 @dataclass(frozen=True, slots=True)
