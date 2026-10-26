@@ -20,12 +20,20 @@ from amlearn.tracefile import TraceFileError, TraceSchema
 from amlearn.traces import demonstrate
 
 
+def _positive(text: str) -> int:
+    value = int(text)
+    if value < 1:
+        msg = f"{value} is not a positive count"
+        raise argparse.ArgumentTypeError(msg)
+    return value
+
+
 def main(argv: list[str]) -> int:
     """Draw training problems, demonstrate them, learn, and print the learned domain."""
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("benchmark", nargs="?", choices=sorted(BENCHMARKS))
     parser.add_argument("--domain", type=Path, help="read the signature from a PDDL domain")
-    parser.add_argument("--demos", type=int, default=10)
+    parser.add_argument("--demos", type=_positive, default=10)
     parser.add_argument("--seed", type=int, default=0)
     source = parser.add_mutually_exclusive_group()
     source.add_argument("--traces", type=Path, help="learn from a trace file instead")

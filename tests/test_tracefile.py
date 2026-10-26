@@ -156,6 +156,12 @@ class TestOwnDomain:
         assert ":precondition (and (dark ?l) (not (lit ?l)))" in out.stdout
         assert ":effect (and (lit ?l) (not (dark ?l))))" in out.stdout
 
+    def test_a_count_of_demonstrations_below_one_is_refused(self):
+        tool = [sys.executable, str(ROOT / "tools" / "learn.py"), "blocksworld", "--demos", "0"]
+        out = subprocess.run(tool, capture_output=True, text=True, check=False)
+        assert out.returncode == 2
+        assert "0 is not a positive count" in out.stderr
+
     def test_a_domain_without_traces_is_refused(self, tmp_path):
         out = self._learn(tmp_path)
         assert out.returncode == 2

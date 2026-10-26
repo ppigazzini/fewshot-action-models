@@ -102,6 +102,8 @@ def main(argv: list[str]) -> int:
 
     if args.check:
         expected = loads(args.check.read_text(encoding="utf-8"))
+        if expected["benchmark"] != args.benchmark:
+            parser.error(f"{args.check} is a {expected['benchmark']} study, not {args.benchmark}")
         rows = expected["rows"]
         demos = sorted({r["demos"] for r in rows})
         seeds = sorted({r["seed"] for r in rows})

@@ -75,6 +75,14 @@ class TestTool:
         assert out.returncode == 1
         assert "rows[3].transitions:" in out.stderr
 
+    def test_a_study_of_another_benchmark_is_refused(self):
+        study = str(ROOT / "docs" / "studies" / "gripper.json")
+        out = subprocess.run(
+            [*self.TOOL, "logistics", "--check", study], capture_output=True, text=True, check=False
+        )
+        assert out.returncode == 2
+        assert "is a gripper study, not logistics" in out.stderr
+
     @pytest.mark.parametrize("option", ["--test", "--seeds", "--max-nodes", "--demos"])
     def test_a_count_below_one_is_refused(self, option):
         out = subprocess.run(
