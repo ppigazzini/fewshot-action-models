@@ -52,7 +52,6 @@ class TestDomain:
         [
             (("clean", "o"), "undeclared predicate 'clean'"),
             (("p", "o", "o"), "has 2 arguments, p takes 1"),
-            (("p", "zz"), r"p\(zz\) names \['zz'\], not objects"),
         ],
     )
     def test_relevant_refuses_a_problem_the_domain_does_not_declare(self, goal, expected):
@@ -79,6 +78,10 @@ class TestDomain:
 
 
 class TestProblem:
+    def test_it_refuses_an_atom_over_an_object_it_does_not_list(self):
+        with pytest.raises(StripsError, match=r"x init: p\(zz\) names \['zz'\], not objects"):
+            Problem("x", ("o",), frozenset({("p", "zz")}), frozenset())
+
     def test_it_refuses_an_object_named_twice(self):
         with pytest.raises(StripsError, match=r"more than once: \['o'\]"):
             Problem("p", ("o", "o"), frozenset(), frozenset())

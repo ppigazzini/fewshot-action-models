@@ -111,19 +111,15 @@ class Domain:
             raise StripsError(msg)
 
     def check_problem(self, problem: Problem) -> None:
-        """Raise if an atom of ``problem`` is undeclared, malformed, or names an unlisted object.
+        """Raise if an atom of ``problem`` names an undeclared predicate or has the wrong arity.
 
         Search would otherwise prove a misspelled goal unsolvable: an atom no action makes
-        true and an atom no domain declares look the same to it.
+        true and an atom no domain declares look the same to it. That every atom names listed
+        objects needs no domain, and `Problem` holds it.
         """
-        objects = frozenset(problem.objects)
         for part, atoms in (("init", problem.init), ("goal", problem.goal)):
             for atom in sorted(atoms):
                 self.check_atom(atom, where=f"{problem.name} {part}")
-                unknown = sorted(set(atom[1:]) - objects)
-                if unknown:
-                    msg = f"{problem.name} {part}: {render(atom)} names {unknown}, not objects"
-                    raise StripsError(msg)
 
     def grounded(self, objects: Iterable[str]) -> list[GroundedAction]:
         """Every injective grounding of every schema over ``objects``, in a fixed order.
@@ -209,6 +205,13 @@ class Problem:
             repeated = sorted({o for o in self.objects if self.objects.count(o) > 1})
             msg = f"{self.name}: objects named more than once: {repeated}"
             raise StripsError(msg)
+        objects = frozenset(self.objects)
+        for part, atoms in (("init", self.init), ("goal", self.goal)):
+            for atom in sorted(atoms):
+                unknown = sorted(set(atom[1:]) - objects)
+                if unknown:
+                    msg = f"{self.name} {part}: {render(atom)} names {unknown}, not objects"
+                    raise StripsError(msg)
 
     def satisfied(self, state: State) -> bool:
         """Return whether ``state`` reaches the goal."""
