@@ -99,7 +99,7 @@ permissive model consistent with what the traces show each action does. Without 
 bound it solves every problem SAM solves, since its actions apply wherever SAM's do and have
 the same effects. Under a node bound it can solve fewer: every action applies in every
 state, and the search can exhaust the bound where SAM's finds a plan. On blocksworld it
-hits the bound on 51 of 250 test problems from 3 demonstrations on, all of which SAM
+hits the bound on 97 of 500 test problems from 3 demonstrations on, all of which SAM
 solves from 10 (`docs/04-results.md`). Its plans are judged by the same validator.
 
 ## Limits

@@ -72,7 +72,7 @@ produced, so a file no such model explains is refused.
 ## Run a learning curve
 
 ```bash
-uv run python tools/curve.py blocksworld --demos 1,2,3,5,10,20,50 --seeds 5 --test 50
+uv run python tools/curve.py blocksworld --demos 1,2,3,5,10,20,50 --seeds 10 --test 50
 ```
 
 Per seed: one pool of training problems, one set of 50 test problems, and one learned model
@@ -98,7 +98,7 @@ records all three, and `--check` reruns with them.
 ## Publish and check a study
 
 ```bash
-uv run python tools/curve.py blocksworld --demos 1,2,3,5,10,20,50 --seeds 5 --test 50 \
+uv run python tools/curve.py blocksworld --demos 1,2,3,5,10,20,50 --seeds 10 --test 50 \
     --max-nodes 20000 --json docs/studies/blocksworld.json
 uv run python tools/curve.py blocksworld --check docs/studies/blocksworld.json
 ```

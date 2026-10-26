@@ -28,8 +28,8 @@ would survive being deleted.
 
 A claim needs evidence in the same sentence or the next one.
 
-- **Measured** — give the number and the command. Blocksworld score 90.0 % at 5
-  demonstrations over 5 seeds, from `tools/curve.py blocksworld --check
+- **Measured** — give the number and the command. Blocksworld score 90.2 % at 5
+  demonstrations over 10 seeds, from `tools/curve.py blocksworld --check
   docs/studies/blocksworld.json`.
 - **Inferred** — say so first, not in a trailing caveat. "The mechanism is X" and "X is
   consistent with the data" are different claims.
@@ -44,7 +44,7 @@ the same sentence as the number.
 Every published number needs a committed command. Prose is not a study: if a number cannot
 be grepped out of a command's output, it is not a result.
 
-Quote a rate with its denominator and its spread: 90.0 % (50 to 100 over 5 seeds, 50 test
+Quote a rate with its denominator and its spread: 90.2 % (50 to 100 over 10 seeds, 50 test
 problems each), not 90 %.
 
 A study records counts; a ratio is computed where it is printed, to one decimal place of a
