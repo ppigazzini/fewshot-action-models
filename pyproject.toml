@@ -17,10 +17,10 @@ dependencies = [
     "clingo>=5.8.2",
     # `TypedDict(closed=True)` (PEP 728) is in `typing` from 3.15 only.
     "typing-extensions>=4.16.0",
-    # Pre-alpha, so pinned below 0.1, and confined to `amlearn/study.py`, where it checks
-    # the shape of the one file this code reads back. A 0.0.x minor is a breaking release,
-    # so the floor moves with each release.
-    "valgebra>=0.0.20,<0.1",
+    # Pre-alpha: a 0.0.x release may rename what `amlearn/_valgebra.py` imports, so the range
+    # admits one release and moves with each. Confined to that module, which checks the two
+    # files this code reads back: study files and trace files.
+    "valgebra>=0.0.20,<0.0.21",
 ]
 
 [dependency-groups]

@@ -152,7 +152,7 @@ requires-dist = [
     { name = "annotated-types", specifier = ">=0.8.0" },
     { name = "clingo", specifier = ">=5.8.2" },
     { name = "typing-extensions", specifier = ">=4.16.0" },
-    { name = "valgebra", specifier = ">=0.0.20,<0.1" },
+    { name = "valgebra", specifier = ">=0.0.20,<0.0.21" },
 ]
 
 [package.metadata.requires-dev]
