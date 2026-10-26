@@ -139,8 +139,9 @@ nodes on 97 of the 500 test problems from 3 demonstrations on, problems SAM solv
 uv run python tools/curve.py logistics-local --check docs/studies/logistics-local.json
 ```
 
-Logistics with training problems whose packages change city with probability 0.1, and test
-problems from the logistics study's generator, where they change city with probability 0.5
+Logistics with training problems whose package goals are drawn in the other city with
+probability 0.1, and test problems from the logistics study's generator, where the
+probability is 0.5, a problem whose goal already holds being drawn again in both
 (`logistics-local` in `amlearn/domains/__init__.py`); 10 seeds of 50 test problems, drawn
 by the benchmark's own seeds. Valid plans over 500 test problems, and actions observed on
 average:

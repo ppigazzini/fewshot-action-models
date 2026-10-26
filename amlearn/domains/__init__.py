@@ -143,8 +143,9 @@ BENCHMARKS: dict[str, Benchmark] = {
         train_sizes=(1, 2),
         test_sizes=(2, 3),
     ),
-    # Demonstrations that rarely show the airplane, tests that need it on most problems:
-    # a package changes city in 1 training goal in 10 and in 1 test goal in 2.
+    # Demonstrations that rarely show the airplane, tests that need it on most problems: a
+    # package's goal is drawn in the other city with probability 0.1 in training and 0.5 in
+    # test, and a problem whose goal already holds is drawn again.
     "logistics-local": Benchmark(
         "logistics-local",
         load_domain(_HERE / "logistics.pddl"),
