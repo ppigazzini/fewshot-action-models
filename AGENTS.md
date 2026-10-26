@@ -23,7 +23,7 @@ group). Any Python 3.14 or later will do: `requires-python` in
 uv run --no-sync ruff check                 # lint: every rule is enabled
 uv run --no-sync ruff format --check        # formatting
 uv run --no-sync ty check                   # types
-uv run --no-sync pytest                     # the suite, about a minute
+uv run --no-sync pytest                     # the suite, about 20 s
 uv run --no-sync python tools/check_markdown.py
 uv run --no-sync python tools/curve.py blocksworld --check docs/studies/blocksworld.json
 uv run --no-sync python tools/curve.py blocksworld --check docs/studies/blocksworld-optimistic.json
