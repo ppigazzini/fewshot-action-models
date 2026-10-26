@@ -68,7 +68,9 @@ class Study(TypedDict, closed=True):
     test_problems: Positive
     train_sizes: list[Positive]
     test_sizes: list[Positive]
-    walk_length: Count
+    demonstrator: Literal["shortest", "walk"]
+    walk_steps: Count
+    probe_steps: Count
     rows: list[Row]
 
 
@@ -82,7 +84,9 @@ SETTINGS = (
     "test_problems",
     "train_sizes",
     "test_sizes",
-    "walk_length",
+    "demonstrator",
+    "walk_steps",
+    "probe_steps",
 )
 
 

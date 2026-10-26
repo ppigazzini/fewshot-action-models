@@ -28,7 +28,9 @@ def measure(  # noqa: PLR0913 - the settings a study records
     learner: str,
     train_sizes: list[int],
     test_sizes: list[int],
-    walk_length: int,
+    demonstrator: str,
+    walk_steps: int,
+    probe_steps: int,
 ) -> Study:
     """Run the curve for every seed and return it as a study."""
     bench = BENCHMARKS[benchmark]
@@ -43,7 +45,9 @@ def measure(  # noqa: PLR0913 - the settings a study records
             learner=learner,
             train_sizes=train_sizes,
             test_sizes=test_sizes,
-            walk_length=walk_length,
+            demonstrator=demonstrator,
+            walk_steps=walk_steps,
+            probe_steps=probe_steps,
         )
     return Study(
         format=FORMAT,
@@ -54,7 +58,9 @@ def measure(  # noqa: PLR0913 - the settings a study records
         test_problems=test_problems,
         train_sizes=train_sizes,
         test_sizes=test_sizes,
-        walk_length=walk_length,
+        demonstrator="walk" if demonstrator == "walk" else "shortest",
+        walk_steps=walk_steps,
+        probe_steps=probe_steps,
         rows=rows,
     )
 
@@ -141,7 +147,9 @@ def main(argv: list[str]) -> int:
     parser.add_argument("--learner", choices=["sam", "optimistic"], default="sam")
     parser.add_argument("--train-sizes", type=_counts, help="default: the benchmark's")
     parser.add_argument("--test-sizes", type=_counts, help="default: the benchmark's")
-    parser.add_argument("--walk-length", type=_positive, default=10, help="steps per test walk")
+    parser.add_argument("--demonstrator", choices=["shortest", "walk"], default="shortest")
+    parser.add_argument("--walk-steps", type=_positive, default=10, help="steps per walk shown")
+    parser.add_argument("--probe-steps", type=_positive, default=10, help="steps per test walk")
     out = parser.add_mutually_exclusive_group()
     out.add_argument("--json", type=Path, help="write the study file")
     out.add_argument("--check", type=Path, help="rerun a study file and compare")
@@ -163,7 +171,9 @@ def main(argv: list[str]) -> int:
             learner=expected["learner"],
             train_sizes=expected["train_sizes"],
             test_sizes=expected["test_sizes"],
-            walk_length=expected["walk_length"],
+            demonstrator=expected["demonstrator"],
+            walk_steps=expected["walk_steps"],
+            probe_steps=expected["probe_steps"],
         )
         diff = differences(expected, actual)
         print(table(actual))
@@ -182,7 +192,9 @@ def main(argv: list[str]) -> int:
         learner=args.learner,
         train_sizes=args.train_sizes or list(bench.train_sizes),
         test_sizes=args.test_sizes or list(bench.test_sizes),
-        walk_length=args.walk_length,
+        demonstrator=args.demonstrator,
+        walk_steps=args.walk_steps if args.demonstrator == "walk" else 0,
+        probe_steps=args.probe_steps,
     )
     print(table(study))
     if args.json:

@@ -37,7 +37,9 @@ def _study(*rows: Row) -> Study:
         test_problems=10,
         train_sizes=[3, 4],
         test_sizes=[4, 5],
-        walk_length=10,
+        demonstrator="shortest",
+        walk_steps=0,
+        probe_steps=10,
         rows=list(rows) or [_row()],
     )
 

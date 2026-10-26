@@ -13,7 +13,9 @@
   2,
   3
  ],
- "walk_length": 10,
+ "demonstrator": "shortest",
+ "walk_steps": 0,
+ "probe_steps": 10,
  "rows": [
   {
    "demos": 1,

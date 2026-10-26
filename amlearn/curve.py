@@ -18,7 +18,7 @@ from amlearn.metrics import Counts, predictive, probes, syntactic
 from amlearn.plan.bfs import bfs
 from amlearn.strips import Domain, Problem
 from amlearn.study import Row
-from amlearn.traces import demonstrate
+from amlearn.traces import demonstrate, random_walk
 from amlearn.validate import validate
 
 
@@ -32,25 +32,33 @@ def rows_for_seed(  # noqa: PLR0913 - the measurement's settings, each recorded 
     learner: str = "sam",
     train_sizes: Sequence[int] | None = None,
     test_sizes: Sequence[int] | None = None,
-    walk_length: int = 10,
+    demonstrator: str = "shortest",
+    walk_steps: int = 0,
+    probe_steps: int = 10,
 ) -> list[Row]:
     """Return one row per demonstration count for one seed.
 
     A plan counts as valid only on a test problem the reference model itself solves within
     the node bound, so the score is a fraction of the reference's own and never exceeds it.
-    The sizes default to the benchmark's. The predictive counts are taken on the states of a
-    reference random walk of ``walk_length`` steps from each test problem, drawn from a
-    stream of their own, so they leave every other count of the row unchanged.
+    The sizes default to the benchmark's. A demonstration is a shortest plan, or with
+    ``demonstrator="walk"`` a random walk of ``walk_steps`` steps under the reference from
+    the training problem, drawn from a stream of its own. The predictive counts are taken
+    on the states of a reference random walk of ``probe_steps`` steps from each test problem,
+    from another stream, so they leave every other count of the row unchanged.
     """
     learn = sam.learn if learner == "sam" else optimistic.learn
     train_rng = random.Random(f"{bench.name}:train:{seed}")
     test_rng = random.Random(f"{bench.name}:test:{seed}")
     pool = draw(bench, train_rng, max(demos), tuple(train_sizes or bench.train_sizes))
     tests = draw(bench, test_rng, test_problems, tuple(test_sizes or bench.test_sizes))
-    traces = [demonstrate(bench.domain, p, max_nodes=max_nodes) for p in pool]
+    if demonstrator == "walk":
+        walk_rng = random.Random(f"{bench.name}:walks:{seed}")
+        traces = [random_walk(bench.domain, p, walk_steps, walk_rng) for p in pool]
+    else:
+        traces = [demonstrate(bench.domain, p, max_nodes=max_nodes) for p in pool]
     reference_ok = [bfs(bench.domain, p, max_nodes=max_nodes).plan is not None for p in tests]
     reference_solved = sum(reference_ok)
-    states = probes(bench.domain, tests, walk_length, random.Random(f"{bench.name}:states:{seed}"))
+    states = probes(bench.domain, tests, probe_steps, random.Random(f"{bench.name}:states:{seed}"))
     signature = Signature.of(bench.domain)
     rows: list[Row] = []
     previous: Domain | None = None

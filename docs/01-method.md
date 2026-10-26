@@ -45,7 +45,8 @@ plan takes is never observed. Traces recorded elsewhere are read from a trace fi
 A file is refused when no STRIPS model without constants explains every step. The test is
 exact: such a model contains every observed change among its effects, so the model SAM
 learns replays each step whenever one exists, and it is one itself.
-Random walks are the goal-independent contrast and are used in the safety tests.
+Random walks are the goal-independent contrast: the safety tests learn from them, and
+`--demonstrator walk` measures a curve on them.
 
 ## Planning
 
@@ -81,7 +82,7 @@ false positives and false negatives summed over actions (`amlearn/metrics.py`):
 | applicability | on each test state, the ground actions each model applies |
 | changes | for a ground action both models apply on a test state, the atoms each changes |
 
-The test states are those of a reference random walk of `walk_length` steps from each test
+The test states are those of a reference random walk of `probe_steps` steps from each test
 problem's initial state, from a random stream of their own: 550 per seed for 50 test
 problems and 10 steps. A safe model applies nothing the reference refuses and changes
 exactly what the reference changes there, so its applicability false positives and its

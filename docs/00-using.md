@@ -91,9 +91,11 @@ second table gives precision and recall, from counts pooled over seeds, for the 
 families of model-quality counts of [`01-method.md`](01-method.md#scoring): preconditions,
 effects, applicability and changes.
 
-`--train-sizes` and `--test-sizes` replace the benchmark's sizes, and `--walk-length` the
-length of the reference walks whose states the predictive counts are taken on; a study
-records all three, and `--check` reruns with them.
+`--train-sizes` and `--test-sizes` replace the benchmark's sizes, and `--probe-steps` the
+length of the reference walks whose states the predictive counts are taken on.
+`--demonstrator walk --walk-steps 10` shows the learner random walks of 10 steps from the
+training problems instead of shortest plans. A study records every one of these settings,
+and `--check` reruns with them.
 
 ## Publish and check a study
 

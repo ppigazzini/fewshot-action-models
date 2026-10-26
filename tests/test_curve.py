@@ -36,6 +36,15 @@ def test_a_plan_counts_as_valid_only_where_the_reference_solves_within_the_bound
     assert row["limit"] == 2
 
 
+def test_a_walk_demonstrator_shows_walks_of_the_steps_asked():
+    bench = BENCHMARKS["blocksworld"]
+    rows = rows_for_seed(
+        bench, 0, [1, 3], test_problems=4, max_nodes=20_000, demonstrator="walk", walk_steps=7
+    )
+    assert [r["transitions"] for r in rows] == [7, 21]
+    assert all(r["valid"] == r["solved"] for r in rows)
+
+
 @pytest.mark.slow
 def test_the_published_blocksworld_study_still_reproduces():
     path = Path(__file__).parent.parent / "docs" / "studies" / "blocksworld.json"
