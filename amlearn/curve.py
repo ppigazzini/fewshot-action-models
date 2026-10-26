@@ -15,6 +15,7 @@ from collections.abc import Sequence
 from amlearn.domains import Benchmark, draw
 from amlearn.learn import Signature, optimistic, sam
 from amlearn.plan.bfs import bfs
+from amlearn.strips import Domain
 from amlearn.study import Row
 from amlearn.traces import demonstrate
 from amlearn.validate import validate
@@ -44,16 +45,22 @@ def rows_for_seed(  # noqa: PLR0913 - the measurement's settings, each recorded 
     reference_solved = sum(reference_ok)
     signature = Signature.of(bench.domain)
     rows: list[Row] = []
+    previous: Domain | None = None
+    solved = valid = limit = 0
     for n in demos:
         model = learn(signature, traces[:n])
-        solved = valid = limit = 0
-        for problem, ok in zip(tests, reference_ok, strict=True):
-            outcome = bfs(model, problem, max_nodes=max_nodes)
-            limit += outcome.status == "limit"
-            if outcome.plan is None:
-                continue
-            solved += 1
-            valid += ok and validate(bench.domain, problem, outcome.plan).valid
+        # Traces that show nothing new leave the model as it was, and an equal model searches
+        # the same: two rows in three of every published study repeat the row before.
+        if model != previous:
+            solved = valid = limit = 0
+            for problem, ok in zip(tests, reference_ok, strict=True):
+                outcome = bfs(model, problem, max_nodes=max_nodes)
+                limit += outcome.status == "limit"
+                if outcome.plan is None:
+                    continue
+                solved += 1
+                valid += ok and validate(bench.domain, problem, outcome.plan).valid
+        previous = model
         rows.append(
             Row(
                 demos=n,
