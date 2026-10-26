@@ -20,7 +20,7 @@ dependencies = [
     # Pre-alpha: a 0.0.x release may rename what `amlearn/_valgebra.py` imports, so the range
     # admits one release and moves with each. Confined to that module, which checks the two
     # files this code reads back: study files and trace files.
-    "valgebra>=0.0.20,<0.0.21",
+    "valgebra>=0.0.21,<0.0.22",
 ]
 
 [dependency-groups]
