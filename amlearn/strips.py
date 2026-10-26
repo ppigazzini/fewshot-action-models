@@ -110,6 +110,21 @@ class Domain:
             msg = f"{where}: {render(atom)} has {len(atom) - 1} arguments, {atom[0]} takes {arity}"
             raise StripsError(msg)
 
+    def check_problem(self, problem: Problem) -> None:
+        """Raise if an atom of ``problem`` is undeclared, malformed, or names an unlisted object.
+
+        Search would otherwise prove a misspelled goal unsolvable: an atom no action makes
+        true and an atom no domain declares look the same to it.
+        """
+        objects = frozenset(problem.objects)
+        for part, atoms in (("init", problem.init), ("goal", problem.goal)):
+            for atom in sorted(atoms):
+                self.check_atom(atom, where=f"{problem.name} {part}")
+                unknown = sorted(set(atom[1:]) - objects)
+                if unknown:
+                    msg = f"{problem.name} {part}: {render(atom)} names {unknown}, not objects"
+                    raise StripsError(msg)
+
     def grounded(self, objects: Iterable[str]) -> list[GroundedAction]:
         """Every injective grounding of every schema over ``objects``, in a fixed order.
 
@@ -135,7 +150,11 @@ class Domain:
         A static atom never changes, so a grounding that fails one is never applicable;
         dropping it changes no search result and keeps `grounded`'s order. Gripper's pick
         over 5 balls has 504 groundings and 20 survive.
+
+        Every planner and walk grounds through here, so the problem is checked against the
+        domain here, once.
         """
+        self.check_problem(problem)
         static = self.static_predicates()
         init = problem.init
         objs = sorted(problem.objects)

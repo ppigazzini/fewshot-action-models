@@ -47,6 +47,20 @@ class TestDomain:
         labels = [g.label for g in d.grounded(("o1", "o2"))]
         assert labels == [("a", "o1", "o2"), ("a", "o2", "o1")]
 
+    @pytest.mark.parametrize(
+        ("goal", "expected"),
+        [
+            (("clean", "o"), "undeclared predicate 'clean'"),
+            (("p", "o", "o"), "has 2 arguments, p takes 1"),
+            (("p", "zz"), r"p\(zz\) names \['zz'\], not objects"),
+        ],
+    )
+    def test_relevant_refuses_a_problem_the_domain_does_not_declare(self, goal, expected):
+        d = Domain("d", {"p": 1}, {"a": Action("a", ("?x",), add=frozenset({("p", "?x")}))})
+        problem = Problem("x", ("o",), frozenset(), frozenset({goal}))
+        with pytest.raises(StripsError, match=expected):
+            d.relevant(problem)
+
     def test_relevant_drops_groundings_a_static_atom_rules_out(self):
         act = Action(
             "a", ("?x",), pre_pos=frozenset({("kind", "?x")}), add=frozenset({("p", "?x")})
