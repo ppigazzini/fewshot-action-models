@@ -41,6 +41,8 @@ def validate(domain: Domain, problem: Problem, plan: Sequence[GroundAction]) -> 
 
 def _refusal(domain: Domain, objects: frozenset[str], state: State, label: GroundAction) -> str:
     """Return why ``label`` cannot be taken in ``state``, or the empty string if it can."""
+    if not label:
+        return "an empty step names no action"
     name, args = label[0], label[1:]
     action = domain.actions.get(name)
     if action is None:

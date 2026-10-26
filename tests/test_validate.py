@@ -33,6 +33,10 @@ class TestValidate:
         verdict = validate(blocks.domain, problem, [("pick-up", "zz")])
         assert verdict.reason == "pick-up(zz): unknown ['zz']"
 
+    def test_it_refuses_an_empty_step(self, blocks, rng):
+        problem = blocks.generate(rng, 3)
+        assert validate(blocks.domain, problem, [()]).reason == "an empty step names no action"
+
     def test_it_refuses_a_repeated_object(self, blocks, rng):
         problem = blocks.generate(rng, 3)
         verdict = validate(blocks.domain, problem, [("stack", "b1", "b1")])
