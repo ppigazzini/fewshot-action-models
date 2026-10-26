@@ -133,6 +133,35 @@ problems unsolvable. With every action applicable in every state, the search fil
 nodes on 97 of the 500 test problems from 3 demonstrations on, problems SAM solves from
 10.
 
+## Demonstrations against random walks
+
+```bash
+uv run python tools/curve.py blocksworld --check docs/studies/blocksworld-walks.json
+uv run python tools/curve.py logistics --check docs/studies/logistics-walks.json
+```
+
+The same seeds, training problems, test problems and bound as the two studies above, each
+demonstration replaced by a random walk of 10 steps under the reference from the same
+training problem. Valid plans over the 500 test problems, with the transitions observed:
+
+| shown | blocksworld: shortest plans | blocksworld: walks | logistics: shortest plans | logistics: walks |
+|---:|---:|---:|---:|---:|
+| 1 | 211 (5.0) | 204 (10.0) | 319 (9.1) | 7 (10.0) |
+| 2 | 340 (10.0) | 405 (20.0) | 500 (16.8) | 31 (20.0) |
+| 3 | 384 (14.8) | 500 (30.0) | 500 (25.1) | 57 (30.0) |
+| 5 | 451 (23.6) | 500 (50.0) | 500 (38.7) | 288 (50.0) |
+| 10 | 500 (46.6) | 500 (100.0) | 500 (74.4) | 453 (100.0) |
+| 20 | 500 (92.6) | 500 (200.0) | 500 (147.6) | 500 (200.0) |
+
+On blocksworld a walk observes all four actions from the first one and three walks, 30
+transitions, solve every test problem, where shortest plans need 10 demonstrations and
+46.6 transitions. On logistics the order reverses: two shortest plans, 16.8 transitions,
+solve every test problem, and walks need 20, 200 transitions. Inferred from the action
+counts of the two studies: a uniform walk among the 5.1 actions the reference applies on
+an average test state rarely carries a package to another city, so it observes the
+airplane's actions late and keeps the coincidental truck preconditions longer. Every plan is valid in both studies, and no walk
+model applies an action the reference refuses on a test state.
+
 ## Gripper
 
 ```bash

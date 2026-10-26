@@ -29,6 +29,8 @@ uv run --no-sync python tools/curve.py blocksworld --check docs/studies/blockswo
 uv run --no-sync python tools/curve.py blocksworld --check docs/studies/blocksworld-optimistic.json
 uv run --no-sync python tools/curve.py gripper --check docs/studies/gripper.json
 uv run --no-sync python tools/curve.py logistics --check docs/studies/logistics.json
+uv run --no-sync python tools/curve.py blocksworld --check docs/studies/blocksworld-walks.json
+uv run --no-sync python tools/curve.py logistics --check docs/studies/logistics-walks.json
 ```
 
 All of them must be clean before a commit. A change that moves a published
