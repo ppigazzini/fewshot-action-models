@@ -157,7 +157,10 @@ def _drop_distinct(name: str, params: tuple[str, ...], expr: SExpr) -> SExpr:
     parts: list[SExpr] = expr[1:] if isinstance(expr, list) and expr[:1] == ["and"] else [expr]
     kept: list[SExpr] = []
     for part in parts:
-        inner = part[1] if isinstance(part, list) and part[:1] == ["not"] and part[1:] else None
+        # A negation of anything but one expression is left to `_literals`, which refuses it:
+        # read as an inequality, its other expressions would be dropped with it.
+        negation = isinstance(part, list) and part[:1] == ["not"] and len(part) == 2  # noqa: PLR2004
+        inner = part[1] if negation else None
         if not (isinstance(inner, list) and inner[:1] == ["="]):
             kept.append(part)
             continue

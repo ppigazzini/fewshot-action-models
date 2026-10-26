@@ -93,6 +93,12 @@ class TestMalformedText:
                 DOMAIN.format("(:action a :parameters (?x ?y) :precondition (= ?x ?y))"),
                 "'=' is outside the supported subset",
             ),
+            (
+                DOMAIN.format(
+                    "(:action a :parameters (?x ?y) :precondition (and (not (= ?x ?y) (p ?x))))"
+                ),
+                "malformed negation",
+            ),
         ],
     )
     def test_a_malformed_domain_is_a_pddl_error_naming_the_fault(self, text, expected):
