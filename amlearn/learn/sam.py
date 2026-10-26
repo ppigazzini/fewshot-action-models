@@ -103,11 +103,13 @@ def unexplained(model: Domain, step: Transition) -> list[str]:
     changes that the action does not name, which no schema without constants can do, or an
     effect another step of the same action shows fails to happen here.
 
-    A step that repeats an object is skipped, as `learn` skips it.
+    A step whose action repeats an object is one no model takes under injective grounding,
+    and its reason says so; `learn` skips it.
     """
     name, objects = step.action[0], step.action[1:]
     if not is_injective(objects):
-        return []
+        repeated = " and ".join(sorted({o for o in objects if objects.count(o) > 1}))
+        return [f"{render(step.action)} repeats {repeated}, which injective grounding never does"]
     action = model.actions[name]
     replayed = action.ground(objects).apply(step.state)
     param = dict(zip(objects, action.params, strict=True))

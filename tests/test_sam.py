@@ -107,6 +107,13 @@ class TestReplay:
         model = learn(Signature.of(bench.domain), traces)
         assert [r for trace in traces for step in trace for r in unexplained(model, step)] == []
 
+    def test_a_step_that_repeats_an_object_is_unexplained(self, blocks):
+        step = Transition(frozenset(), ("stack", "a", "a"), frozenset({("on", "a", "a")}))
+        model = learn(Signature.of(blocks.domain), [(PICK_A,)])
+        assert unexplained(model, step) == [
+            "stack(a,a) repeats a, which injective grounding never does"
+        ]
+
     def test_a_change_the_action_does_not_name_is_unexplained(self, blocks):
         step = Transition(PICK_A.state, PICK_A.action, PICK_A.next_state | {("clear", "b")})
         model = learn(Signature.of(blocks.domain), [(step,)])

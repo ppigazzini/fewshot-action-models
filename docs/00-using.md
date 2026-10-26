@@ -63,7 +63,9 @@ line 4: steps[4]: holding(b1) is false after pick-up(b1), but another pick-up st
 ```
 
 The first is a change no action schema without constants makes; the second, an atom
-dropped from one recorded state, which the other pick-up steps contradict. The safety guarantee is stated for traces such a model
+dropped from one recorded state, which the other pick-up steps contradict. A step whose
+action repeats an object, `stack(b1,b1)`, is refused as well: injective grounding never
+takes one. The safety guarantee is stated for traces such a model
 produced, so a file no such model explains is refused.
 
 ## Run a learning curve
