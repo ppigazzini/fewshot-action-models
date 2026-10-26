@@ -113,5 +113,6 @@ solves from 10 (`docs/04-results.md`). Its plans are judged by the same validato
 - Untyped STRIPS only: no conditional effects, quantifiers, numeric fluents or constants in
   schemas. Safe learning with conditional effects (Mordoch, Scala, Stern and Juba 2024)
   and with numeric fluents (Mordoch, Juba and Stern 2023) holds under further assumptions.
-- Small instances: blocksworld is tested up to 5 blocks, gripper up to 4 balls, logistics
-  up to 3 packages. A curve over larger test sizes is not measured.
+- Small instances. Training stays at 3–4 blocks, 2–3 balls and 1–2 packages; the studies
+  test up to 5 blocks, 4 balls and 3 packages, and the large ones up to 7 blocks, 8 balls
+  and 5 packages, where BFS still exhausts every reachable state of the reference.

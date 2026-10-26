@@ -34,7 +34,16 @@ uv run --no-sync python tools/curve.py logistics --check docs/studies/logistics-
 uv run --no-sync python tools/curve.py logistics-local --check docs/studies/logistics-local.json
 ```
 
-All of them must be clean before a commit. A change that moves a published
+All of them must be clean before a commit. The studies at large test sizes take about 13
+minutes and run weekly in CI (`.github/workflows/large.yml`); a change to the learner, the
+planners, the generators or the metrics reruns them before its commit:
+
+```bash
+uv run --no-sync python tools/curve.py blocksworld --check docs/studies/blocksworld-large.json
+uv run --no-sync python tools/curve.py gripper --check docs/studies/gripper-large.json
+uv run --no-sync python tools/curve.py logistics --check docs/studies/logistics-large.json
+```
+ A change that moves a published
 count regenerates the study with `--json` in the same commit and says why the
 count moved.
 

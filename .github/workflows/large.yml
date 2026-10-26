@@ -1,0 +1,22 @@
+name: large studies
+
+# The studies over test sizes beyond the per-commit ones take about 13 minutes, logistics at
+# 4 and 5 packages most of it, so they run weekly and on demand instead of on every push.
+on:
+  schedule:
+    - cron: "17 4 * * 1"
+  workflow_dispatch:
+
+jobs:
+  large:
+    name: published studies at large test sizes
+    runs-on: ubuntu-26.04
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: astral-sh/setup-uv@07a047e608db84b3d8c06cd9a7c7dcc9c355c18e # v10.3.2
+        with: { version: "0.13.5", python-version: "3.14", enable-cache: true }
+      - run: uv sync --locked
+      - run: uv run python tools/curve.py blocksworld --check docs/studies/blocksworld-large.json
+      - run: uv run python tools/curve.py gripper --check docs/studies/gripper-large.json
+      - run: uv run python tools/curve.py logistics --check docs/studies/logistics-large.json

@@ -201,6 +201,36 @@ initial state, so every plan moves a ball across rooms and uses all three action
 demonstration observes each of them. Gripper therefore checks the guarantee and the
 planners; it does not produce a curve.
 
+## Larger test problems
+
+```bash
+uv run python tools/curve.py blocksworld --check docs/studies/blocksworld-large.json
+uv run python tools/curve.py gripper --check docs/studies/gripper-large.json
+uv run python tools/curve.py logistics --check docs/studies/logistics-large.json
+```
+
+The blocksworld, gripper and logistics studies with the same training problems and seeds,
+and test problems of 6–7 blocks, 6–8 balls and 4–5 packages, sizes no demonstration shows;
+BFS bound 200,000 nodes, under which the reference solves every test problem. Valid plans,
+against the studies above:
+
+| demos | blocksworld 4–5 | blocksworld 6–7 | logistics 2–3 | logistics 4–5 |
+|---:|---:|---:|---:|---:|
+| 1 | 211 of 500 | 180 of 500 | 319 of 500 | 309 of 500 |
+| 2 | 340 | 302 | 500 | 500 |
+| 3 | 384 | 345 | 500 | 500 |
+| 5 | 451 | 440 | 500 | 500 |
+| 10 | 500 | 500 | 500 | 500 |
+
+A model learned from 3–4 blocks solves every 7-block test problem from 10 demonstrations,
+and one from 1–2 packages every 5-package problem from 2. Inferred from the precondition
+counts, which are the same at every test size: once a precondition holds no literal a
+small demonstration made true by coincidence, the size of the problem does not matter to
+it. Gripper solves all 90 test problems of 6–8 balls from one demonstration.
+Every plan is valid, and no model applies an action the reference refuses on a test state.
+These three studies take about 13 minutes and are checked weekly
+(`.github/workflows/large.yml`).
+
 ## Not measured
 
 - The optimistic baseline on Logistics. Without preconditions nothing narrows the 11,880
