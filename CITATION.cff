@@ -8,6 +8,15 @@ authors:
     orcid: "https://orcid.org/0009-0004-6977-7317"
 license: Apache-2.0
 version: 0.0.1
+date-released: 2026-10-27
+doi: 10.5281/zenodo.23686032
+identifiers:
+  - type: doi
+    value: 10.5281/zenodo.23686032
+    description: "Every version"
+  - type: doi
+    value: 10.5281/zenodo.23686033
+    description: "Version 0.0.1"
 abstract: >-
   Learns the preconditions and effects of planning actions, a lifted STRIPS model with
   negative preconditions, from a few fully observed demonstrations by safe action-model

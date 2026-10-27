@@ -71,6 +71,13 @@ reading a hidden atom as false finds plans for 444 and 40 of them are valid.
 
 See [`docs/`](docs/README.md) for the method, the results and the development rules.
 
+## Citing
+
+[doi:10.5281/zenodo.23686032](https://doi.org/10.5281/zenodo.23686032) cites every
+version; version 0.0.1 is
+[doi:10.5281/zenodo.23686033](https://doi.org/10.5281/zenodo.23686033).
+[`CITATION.cff`](CITATION.cff) holds the record.
+
 ## Licence
 
 Apache-2.0. See [`LICENSE`](LICENSE).
