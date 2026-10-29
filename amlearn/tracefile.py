@@ -51,7 +51,7 @@ from amlearn.strips import Atom, Trace, Transition
 #: An object's name.
 OBJECT = Validator(Annotated[str, MinLen(1)])
 
-#: How many failures one error names before summarising the rest.
+#: How many failures one error names before summarizing the rest.
 MAX_REPORTED = 20
 
 
@@ -186,7 +186,7 @@ def _trace(steps: list[dict[str, Any]]) -> Trace:
 
 
 def _step(t: Transition) -> dict[str, Any]:
-    """Serialise a step, atoms sorted so equal traces give equal text."""
+    """Serialize a step, atoms sorted so equal traces give equal text."""
     return {
         "state": [list(a) for a in sorted(t.state)],
         "action": list(t.action),

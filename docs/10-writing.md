@@ -6,7 +6,7 @@ carry it.
 ## The standard
 
 **Authoritative.** Write the fact, not the journey to it. "The ladder starts at 640" — not
-"we tried starting at 160 and then realised".
+"we tried starting at 160 and then realized".
 
 **No history.** Not in pages, not in comments, not in commit messages. A text describes
 what is, not what was or how it came to be known. Where a past defect is load-bearing,
@@ -23,6 +23,23 @@ A property either has a number or is not claimed.
 
 **Lean.** Every sentence carries a fact, a number, or a consequence. Cut anything that
 would survive being deleted.
+
+## American English
+
+Every surface is American English: pages, comments, docstrings, identifiers, test names,
+messages and commit messages.
+
+- `-ize` and `-yze`, not `-ise` and `-yse`: `serialize`, `summarized`, `analyze`. Words
+  that are `-ise` in American English stay so: `advise`, `exercise`, `otherwise`.
+- `-or`, not `-our`: `behavior`, `favors`. `-er`, not `-re`: `center`.
+- One `l` before a suffix: `modeled`, `labeled`, `traveling`.
+- `license` for noun and verb; `judgment`, `artifact`, `gray`.
+- `toward`, `among`, `while`, `learned`; not `towards`, `amongst`, `whilst`, `learnt`.
+- `( )` are parentheses and `[ ]` are brackets.
+
+Text quoted from elsewhere keeps its spelling: a published title, a name, a third-party
+license. A quoted literal, such as a message or a phrase under discussion, keeps its
+punctuation outside the closing quotation mark, so the quote stays exact.
 
 ## Claims
 
@@ -52,7 +69,7 @@ percentage. The counts are the record, and they compare exactly.
 
 ## Pages
 
-Structure by what the reader is doing, not by how the code is organised.
+Structure by what the reader is doing, not by how the code is organized.
 
 State the limit of what a page covers. A page that silently omits a case reads as though
 the case does not exist.

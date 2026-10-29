@@ -138,7 +138,7 @@ def loads(text: str) -> Study:
 
 
 def dumps(study: Study) -> str:
-    """Serialise a study, refusing one this code should never have built."""
+    """Serialize a study, refusing one this code should never have built."""
     try:
         STUDY.validate(study)
     except ValidationError as exc:

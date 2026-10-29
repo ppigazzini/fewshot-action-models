@@ -39,7 +39,7 @@ Theorem 5). With demonstrations alone, none of them a failed action, the upper b
 a precondition stays the empty conjunction (rule RUP of their Theorem 2), so the tightest
 complete model applies every action everywhere, its effects any consistent set (Theorem
 6): the optimistic model is its member with the observed changes. Every subset of SAM's
-precondition is consistent with the demonstrations, and nothing in them favours one over
+precondition is consistent with the demonstrations, and nothing in them favors one over
 another; only negative demonstrations narrow the upper boundary.
 
 **Completeness is what safety costs.** An action never observed is absent from the model.

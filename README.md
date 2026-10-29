@@ -50,7 +50,7 @@ uv run python tools/check_markdown.py
 
 Blocksworld, training on 3–4 blocks, testing on 4–5; both learners on the same 10 seeds
 of 50 test problems, BFS bound 20,000 nodes (`docs/04-results.md`). Each cell counts plans
-over the 500 test problems, with the per-seed range of the share in brackets:
+over the 500 test problems, with the per-seed range of the share in parentheses:
 
 | demonstrations | SAM: valid plans | SAM: invalid plans | optimistic: plans found | optimistic: valid plans |
 |---:|---:|---:|---:|---:|
@@ -78,6 +78,6 @@ version; version 0.0.1 is
 [doi:10.5281/zenodo.23686033](https://doi.org/10.5281/zenodo.23686033).
 [`CITATION.cff`](CITATION.cff) holds the record.
 
-## Licence
+## License
 
 Apache-2.0. See [`LICENSE`](LICENSE).

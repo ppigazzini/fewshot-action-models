@@ -11,7 +11,7 @@ uv run python tools/curve.py blocksworld --check docs/studies/blocksworld.json
 
 Training problems of 3–4 blocks, test problems of 4–5 blocks (the largest training size and
 one beyond); 10 seeds, 50 test problems per seed, BFS bound 20,000 nodes, which no search
-reaches: `limit` is 0 in every row. Mean over seeds, per-seed range in brackets.
+reaches: `limit` is 0 in every row. Mean over seeds, per-seed range in parentheses.
 
 | demos | transitions | actions | solved % | valid % of solved | score vs reference % |
 |---:|---:|---:|---:|---:|---:|

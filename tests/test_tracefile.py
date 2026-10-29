@@ -87,7 +87,7 @@ class TestRefusals:
         assert "line 2: expected valid JSON" in message
         assert "line 3:" in message
 
-    def test_a_long_list_of_failures_is_summarised(self, schema_and_text):
+    def test_a_long_list_of_failures_is_summarized(self, schema_and_text):
         schema, text = schema_and_text
         bad = self._broken(text, lambda s: s[0].__setitem__("extra", 1))
         with pytest.raises(TraceFileError, match=r"\(\+5 more\)"):

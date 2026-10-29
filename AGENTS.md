@@ -65,6 +65,6 @@ count moved.
   file (`amlearn/study.py`) and trace files (`amlearn/tracefile.py`). The
   learner and the planners work on literal sets, which Python decides exactly.
 - Tests are named as sentences (`test_delete_comes_before_add`) and grouped in
-  `Test...` classes by the behaviour they pin down.
+  `Test...` classes by the behavior they pin down.
 - `__DEV/` holds internal notes and is never committed. Read
   `__DEV/00-CONTRACT.md` before a change of scope.

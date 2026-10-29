@@ -97,7 +97,7 @@ def _pct(values: list[float]) -> str:
 
 
 def table(study: Study) -> str:
-    """Render a study as a Markdown table: seed mean, with the per-seed range in brackets."""
+    """Render a study as a Markdown table: seed mean, with the per-seed range in parentheses."""
     seeds = sorted({r["seed"] for r in study["rows"]})
     lines = [
         (
